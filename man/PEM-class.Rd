@@ -12,7 +12,7 @@
 \usage{
   \method{print}{PEM}(x, ...)
   \method{as.data.frame}{PEM}(x, row.names = NULL, optional = FALSE, ...)
-  \method{predict}{PEM}(object, targets, lmobject,
+  \method{predict}{PEM}(object, targets, lmobject, newdata, 
   interval = c("none", "confidence", "prediction"), level = 0.95, ...)
 }
 \arguments{
@@ -24,6 +24,7 @@
   \item{ targets }{ Output of \code{\link{getGraphLocations}}. }
   \item{ lmobject }{ An object of class \sQuote{lm} (see
     \code{\link{lm}} for details). }
+  \item{ newdata }{ auxiliary trait values }
   \item{ interval }{ The kind of limits (confidence or prediction) to
     return with the predictions. \code{interval="none"}: do not return a
     confidence interval. }
@@ -45,7 +46,8 @@
   predictions. It must be given species locations with respect to the
   phylogenetic graph (\code{target}), which are provided by function
   \code{\link{getGraphLocations}} and a linear model in the form of an
-  object from \code{\link{lm}}.
+  object from \code{\link{lm}}. The user must provide auxiliary trait
+  values if \code{lmobject} involves such trait.
 }
 \value{
   A \code{\link{PEM-class}} object contains:
