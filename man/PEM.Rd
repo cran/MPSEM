@@ -157,7 +157,7 @@ PEMfs2$optim       # Same as for PEMfs1$optim
 PEMsc1 <- Locations2PEMscores(PEMfs2, grloc)
 lm1 <- lm(y~V_2+V_3+V_5,data=PEMfs2)
 #
-ypred <- predict(PEMfs2,grloc,lm1,"none")
+ypred <- predict(object=PEMfs2,targets=grloc,lmobject=lm1,interval="none")
 #
 tpModel <- drop.tip(tpAll,c("X","Y","Z"))
 #

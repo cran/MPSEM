@@ -128,22 +128,34 @@ as.data.frame.PEM <- function(x, row.names = NULL, optional = FALSE, ...) {
   return(as.data.frame(x$u))
 }
 #
-predict.PEM <- function(object, targets, lmobject, interval=c("none", "confidence", "prediction"), level=0.95, ...) {
-  newdata <- Locations2PEMscores(object,targets)
+predict.PEM <- function (object, targets, lmobject, newdata, interval = c("none", "confidence", "prediction"), level = 0.95, ...) {
+  if(missing(newdata)) newdata <- Locations2PEMscores(object, targets) else {
+    if(nrow(targets$locations)!=nrow(newdata))
+      stop("'newdata' has ",nrow(newdata)," rows but the number of target species is ",nrow(targets$locations),".")
+    tmp <- Locations2PEMscores(object, targets)
+    rownames(newdata) <- rownames(tmp$scores)
+    tmp$scores <- cbind(newdata,tmp$scores)
+    newdata <- tmp
+    rm(tmp)
+  }
   interval <- match.arg(interval)
-  Residual.variance <- diag(t(lmobject$residuals)%*%lmobject$residuals)/lmobject$df
-  Xh <- cbind(1,newdata$scores[,attr(lmobject$terms,"term.labels"),drop=FALSE])
-  pred <- Xh%*%lmobject$coefficients
-  if(interval=="none")
-    return(pred)
+  Residual.variance <- diag(t(lmobject$residuals) %*% lmobject$residuals)/lmobject$df
+  Xh <- cbind(1, as.matrix(newdata$scores[, attr(lmobject$terms, "term.labels"), drop = FALSE]))
+  pred <- Xh %*% lmobject$coefficients
+  if (interval == "none") return(pred)
   R <- qr.R(lmobject$qr)
-  invXtX <- solve(t(R)%*%R)
-  XhinvXtXtXh <- diag(Xh%*%invXtX%*%t(Xh))
-  if(interval=="confidence")
-    S <- sqrt(t((newdata$VarianceFactor/nrow(object$y))+matrix(Residual.variance,length(Residual.variance),length(XhinvXtXtXh))*XhinvXtXtXh))
-  if(interval=="prediction")
-    S <- sqrt(t(newdata$VarianceFactor+matrix(Residual.variance,length(Residual.variance),length(XhinvXtXtXh))*(1+XhinvXtXtXh)))
-  return(list(values=pred,lower=pred+S*qt(0.5*(1-level),lmobject$df),upper=pred+S*qt(0.5*(1-level),lmobject$df,lower.tail=FALSE)))
+  invXtX <- solve(t(R) %*% R)
+  XhinvXtXtXh <- diag(Xh %*% invXtX %*% t(Xh))
+  if (interval == "confidence")
+    S <- sqrt(t((newdata$VarianceFactor/nrow(object$y)) + 
+         matrix(Residual.variance, length(Residual.variance), 
+         length(XhinvXtXtXh)) * XhinvXtXtXh))
+  if (interval == "prediction") 
+    S <- sqrt(t(newdata$VarianceFactor + matrix(Residual.variance, 
+         length(Residual.variance), length(XhinvXtXtXh)) * 
+         (1 + XhinvXtXtXh)))
+  return(list(values = pred, lower = pred + S * qt(0.5 * (1 - level), lmobject$df),
+              upper = pred + S * qt(0.5 * (1 - level), lmobject$df, lower.tail = FALSE)))
 }
 #
 PEM.fitSimple <- function(y,x,w,d="distance",sp="species",lower=0,upper=1,tol=.Machine$double.eps^0.5) {

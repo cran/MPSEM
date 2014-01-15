@@ -7,11 +7,12 @@
   Phylogenetic Eigenvector Maps as their features.
 }
 \usage{
-  lmforwardsequentialsidak(y, object, alpha=0.05)
-  lmforwardsequentialAICc(y, object)
+  lmforwardsequentialsidak(y, x, object, alpha=0.05)
+  lmforwardsequentialAICc(y, x, object)
 }
 \arguments{
   \item{ y }{ a response variable }
+  \item{ x }{ descriptors to be used as auxiliary traits }
   \item{ object }{ a \code{PEM} class object }
   \item{ alpha }{ the threshold above which to stop adding variables }
 }
