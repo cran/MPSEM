@@ -3,10 +3,14 @@
 #
 EvolveOptimMarkovTree <- function(tp,tw,anc,p=1,root=tp$edge[1,1]) {
   nn <- length(tp$tip.label)+tp$Nnode
-  if(nrow(tw) != ncol(tw)) stop("Transition probability matrix (tw) must be a square matrix")
-  if(anc > nrow(tw)) stop("Ancestral state (anc) not defined in the transition probability matrix (tw).")
-  if(any(rowSums(tw) != 1)) stop("The sum of transition probabilities is not systematically 1.")
-  if(root > nn) stop("Invalid parameter root.")
+  if(nrow(tw) != ncol(tw))
+    stop("Transition probability matrix (tw) must be a square matrix")
+  if(anc > nrow(tw))
+    stop("Ancestral state (anc) not defined in the transition probability matrix (tw).")
+  if(any((abs(rowSums(tw)-1)) > sqrt(.Machine$double.eps)))
+    warning("The sum of transition probabilities is not systematically 1.")
+  if(root > nn)
+    stop("Invalid parameter root.")
   res <- t(matrix(.C("EvolveQC",
                      as.integer(tp$edge[,1]),
                      as.integer(tp$edge[,2]),
@@ -29,8 +33,10 @@ EvolveOptimMarkovTree <- function(tp,tw,anc,p=1,root=tp$edge[1,1]) {
 #
 TraitOUsimTree <- function(tp,a,sigma,opt,p=1,root=tp$edge[1,1]) {
   nn <- length(tp$tip.label)+tp$Nnode
-  if(root > nn) stop("Invalid parameter root.")
-  if(length(opt) != nn) stop("Optima don't match the number of nodes.")
+  if(root > nn)
+    stop("Invalid parameter root.")
+  if(length(opt) != nn)
+    stop("Optima don't match the number of nodes.")
   res <- matrix(.C("OUsim",
                    as.integer(tp$edge[,1]),
                    as.integer(tp$edge[,2]),

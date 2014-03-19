@@ -5,7 +5,7 @@
  The code is a work in progress and may therefore contain
  more functionalities than those involved in the functions
  functions called from R.
- Guillaume Guenard - Universite de Montreal - 2010-2012
+ Guillaume Guenard - Universite de Montreal - 2010-2014
  C Functions
 *********************************************************/
 
@@ -16,23 +16,23 @@
 // C Structure-based graph representation scheme.
 
 // Allocate memory for ne directed edges.
-struct dedge* allocdedge(unsigned int ne) {
-  struct dedge* de = (struct dedge*)Calloc(ne,struct dedge);
+dedge* allocdedge(unsigned int ne) {
+  dedge* de = (dedge*)Calloc(ne,dedge);
   if(de == NULL)
     error("Unable to allocate %d directed edges",ne);
   return de;
 }
 
 // Re-allocate memory for ne directed edges.
-struct dedge* reallocdedge(struct dedge *de, unsigned int ne) {
-  de = (struct dedge*)Realloc(de,ne,struct dedge);
+dedge* reallocdedge(dedge *de, unsigned int ne) {
+  de = (dedge*)Realloc(de,ne,dedge);
   if(de == NULL)
     error("Unable to reallocate %d directed edges",ne);
   return de;
 }
 
 // Initialize ne directed edges starting from start.
-struct dedge* initdedge(struct dedge* de, unsigned int start, unsigned int ne) {
+dedge* initdedge(dedge* de, unsigned int start, unsigned int ne) {
   unsigned int i;
   for (i = start; i < start+ne; i++) {
     de[i].id = i;
@@ -45,7 +45,7 @@ struct dedge* initdedge(struct dedge* de, unsigned int start, unsigned int ne) {
 }
 
 // Assign arrays of values to edges (by address).
-void assigndedgevalues(struct dedge* de, unsigned int ne, double* ev, unsigned int nev) {
+void assigndedgevalues(dedge* de, unsigned int ne, double* ev, unsigned int nev) {
   unsigned int i, offset;
   offset = 0;
   for (i = 0; i < ne; i++, offset += nev) {
@@ -56,7 +56,7 @@ void assigndedgevalues(struct dedge* de, unsigned int ne, double* ev, unsigned i
 }
 
 // Free directed edges from memory.
-struct dedge* freededge(struct dedge* de) {
+dedge* freededge(dedge* de) {
   if(de != NULL) {
     Free(de);
     if(de != NULL)
@@ -66,23 +66,23 @@ struct dedge* freededge(struct dedge* de) {
 }
 
 // Allocate memory for nn directed vertices.
-struct dvertex* allocdvertex(unsigned int nn) {
-  struct dvertex* dn = (struct dvertex*)Calloc(nn,struct dvertex);
+dvertex* allocdvertex(unsigned int nn) {
+  dvertex* dn = (dvertex*)Calloc(nn,dvertex);
   if(dn == NULL)
     error("Unable to allocate %d directed vertices",nn);
   return dn;
 }
 
 // Re-allocate memory for nn directed edges.
-struct dvertex* reallocdvertex(struct dvertex *dn, unsigned int nn) {
-  dn = (struct dvertex*)Realloc(dn,nn,struct dvertex);
+dvertex* reallocdvertex(dvertex *dn, unsigned int nn) {
+  dn = (dvertex*)Realloc(dn,nn,dvertex);
   if(dn == NULL)
     error("Unable to reallocate %d directed vertices",nn);
   return dn;
 }
 
 // Initialize nn directed vertices starting from start.
-struct dvertex* initdvertex(struct dvertex* dn, unsigned int start, unsigned int nn) {
+dvertex* initdvertex(dvertex* dn, unsigned int start, unsigned int nn) {
   unsigned int i;
   for(i = start; i < start+nn; i++) {
     dn[i].id = i;
@@ -97,7 +97,7 @@ struct dvertex* initdvertex(struct dvertex* dn, unsigned int start, unsigned int
 }
 
 // Assign arrays of values to vertices (by address).
-void assigndvertexvalues(struct dvertex* dn, unsigned int nn, double* nv, unsigned int nnv) {
+void assigndvertexvalues(dvertex* dn, unsigned int nn, double* nv, unsigned int nnv) {
   unsigned int i, offset;
   offset = 0;
   for (i = 0; i < nn; i++, offset += nnv) {
@@ -108,21 +108,21 @@ void assigndvertexvalues(struct dvertex* dn, unsigned int nn, double* nv, unsign
 }
 
 // Evaluate the memory requirements and allocate memory for the directed edges.
-struct dvertex* evalallocdvertexres(struct dvertex* dn, unsigned int nn, int* a, int* b, unsigned int nr) {
+dvertex* evalallocdvertexres(dvertex* dn, unsigned int nn, int* a, int* b, unsigned int nr) {
   unsigned int i;
   for(i = 0; i < nr; i++) {
     dn[(unsigned int)(b[i])-1].nu++;
     dn[(unsigned int)(a[i])-1].nd++;
   }
   for(i = 0; i < nn; i++) {
-    dn[i].u = (struct dedge**)Realloc(dn[i].u,dn[i].nu,struct dedge*);
-    dn[i].d = (struct dedge**)Realloc(dn[i].d,dn[i].nd,struct dedge*);
+    dn[i].u = (dedge**)Realloc(dn[i].u,dn[i].nu,dedge*);
+    dn[i].d = (dedge**)Realloc(dn[i].d,dn[i].nd,dedge*);
   }
   return dn;
 }
 
 // Free directed vertex memory ressources.
-struct dvertex freedvertexres(struct dvertex dn) {
+dvertex freedvertexres(dvertex dn) {
   if(dn.u != NULL) {
     Free(dn.u);
     if(dn.u != NULL)
@@ -141,7 +141,7 @@ struct dvertex freedvertexres(struct dvertex dn) {
 }
 
 // Free directed vertices from memory, with their respective ressources.
-struct dvertex* freedvertex(struct dvertex* dn, unsigned int nn) {
+dvertex* freedvertex(dvertex* dn, unsigned int nn) {
   unsigned int i;
   if (dn != NULL) {
     for (i = 0; i < nn; i++)
@@ -154,8 +154,8 @@ struct dvertex* freedvertex(struct dvertex* dn, unsigned int nn) {
 }
 
 // Build a directed graph.
-struct dgraph initdgraph(char* id, unsigned int ne, char** elabels, unsigned int nn, char** nlabels) {
-  struct dgraph dgr;
+dgraph initdgraph(char* id, unsigned int ne, char** elabels, unsigned int nn, char** nlabels) {
+  dgraph dgr;
   dgr.id = id;
   dgr.ne = ne;
   dgr.de = allocdedge(ne);
@@ -169,14 +169,14 @@ struct dgraph initdgraph(char* id, unsigned int ne, char** elabels, unsigned int
 }
 
 // Assign arrays of values to edges and vertices of a graph (by address).
-void assigndgraphvalues(struct dgraph* dgr, double* ev, unsigned int nev, double* nv, unsigned int nnv) {
+void assigndgraphvalues(dgraph* dgr, double* ev, unsigned int nev, double* nv, unsigned int nnv) {
   assigndedgevalues(dgr->de,dgr->ne,ev,nev);
   assigndvertexvalues(dgr->dn,dgr->nn,nv,nnv);
   return;
 }
 
 // Connect vertices and edges within a directed graph using a table.
-void makedgraph(int* a, int* b, struct dgraph* dgr) {
+void makedgraph(int* a, int* b, dgraph* dgr) {
   unsigned int i, u, d, *nu, *nd;
   dgr->dn = evalallocdvertexres(dgr->dn,dgr->nn,a,b,dgr->ne);
   nu = (unsigned int*)Calloc(dgr->nn,unsigned int);
@@ -200,7 +200,7 @@ void makedgraph(int* a, int* b, struct dgraph* dgr) {
 }
 
 // Free a directed graph's ressources from memory.
-void freedgraph(struct dgraph* dgr) {
+void freedgraph(dgraph* dgr) {
   dgr->de = freededge(dgr->de);
   if(dgr->de == NULL)
     dgr->ne = 0;
@@ -211,8 +211,8 @@ void freedgraph(struct dgraph* dgr) {
 }
 
 // Initialize a matrix structure and allocate necessary ressources.
-struct matrix initmatrix(char* id, unsigned int nr, unsigned int nc) {
-  struct matrix mat;
+matrix initmatrix(char* id, unsigned int nr, unsigned int nc) {
+  matrix mat;
   mat.id = id;
   mat.nr = nr;
   mat.nc = nc;
@@ -223,8 +223,8 @@ struct matrix initmatrix(char* id, unsigned int nr, unsigned int nc) {
 }
 
 // Create a matrix structure and assign its data.
-struct matrix assignmatrix(char* id, unsigned int nr, unsigned int nc, double* v) {
-  struct matrix mat;
+matrix assignmatrix(char* id, unsigned int nr, unsigned int nc, double* v) {
+  matrix mat;
   mat.id = id;
   mat.nr = nr;
   mat.nc = nc;
@@ -234,7 +234,7 @@ struct matrix assignmatrix(char* id, unsigned int nr, unsigned int nc, double* v
 
 // Clear a matrix and free its data pointer. Warning: use only when allowed to assign the data pointer.
 // Otherwise, use deassignmatrix() or a segfault will result.
-void freematrix(struct matrix* mat) {
+void freematrix(matrix* mat) {
   Free(mat->v);
   if(mat->v != NULL)
     warning("Data from matrix %s could not be freed from memory.",mat->id);
@@ -247,7 +247,7 @@ void freematrix(struct matrix* mat) {
 
 // Clear a matrix and de-assign its data pointer. Warning: use only when not allowed to assign the data pointer.
 // Otherwise, free the data pointer or use freematrix() to avoid a memory leak.
-void deassignmatrix(struct matrix* mat) {
+void deassignmatrix(matrix* mat) {
   mat->v = NULL;
   mat->nr = 0;
   mat->nc = 0;
@@ -255,16 +255,16 @@ void deassignmatrix(struct matrix* mat) {
 }
 
 // Make a copy of a matrix.
-struct matrix copymatrix(struct matrix *a) {
+matrix copymatrix(matrix *a) {
   unsigned int i, n = a->nr*a->nc;
-  struct matrix b = initmatrix(a->id,a->nr,a->nc);
+  matrix b = initmatrix(a->id,a->nr,a->nc);
   for(i = 0; i < n; i++)
     b.v[i] = a->v[i];
   return b;
 }
 
 // Sums of rows
-void rowsums(struct matrix *a, double *s) {
+void rowsums(matrix *a, double *s) {
   unsigned int i, j, offset;
   double acc;
   for (i = 0; i < a->nr; i++) {
@@ -278,7 +278,7 @@ void rowsums(struct matrix *a, double *s) {
 }
 
 // Sums of columns
-void colsums(struct matrix *a, double *s) {
+void colsums(matrix *a, double *s) {
   unsigned int i, j, offset;
   double acc;
   offset = 0;
@@ -292,7 +292,7 @@ void colsums(struct matrix *a, double *s) {
 }
 
 // Center rows of a on values in c and write results in b.
-void rowcentering(struct matrix *a, struct matrix *b, double *c) {
+void rowcentering(matrix *a, matrix *b, double *c) {
   unsigned int i, j, offset;
   for (i = 0; i < a->nr; i++) {
     offset = i;
@@ -303,7 +303,7 @@ void rowcentering(struct matrix *a, struct matrix *b, double *c) {
 }
 
 // Center columns of a on values in and write results in b.
-void colcentering(struct matrix *a, struct matrix *b, double *c) {
+void colcentering(matrix *a, matrix *b, double *c) {
   unsigned int i, j, offset;
   offset = 0;
   for (j = 0; j < a->nc; j++, offset += a->nr)
@@ -313,7 +313,7 @@ void colcentering(struct matrix *a, struct matrix *b, double *c) {
 }
 
 // Calculate the row means of a, center rows of a on them, and write results in b.
-void rowcentermeans(struct matrix *a, struct matrix *b, double *m) {
+void rowcentermeans(matrix *a, matrix *b, double *m) {
   unsigned int i, j, offset;
   double acc;
   for (i = 0; i < a->nr; i++) {
@@ -330,7 +330,7 @@ void rowcentermeans(struct matrix *a, struct matrix *b, double *m) {
 }
 
 // Calculate the column means of a, center rows of a on them, and write results in b.
-void colcentermeans(struct matrix *a, struct matrix *b, double *m) {
+void colcentermeans(matrix *a, matrix *b, double *m) {
   unsigned int i, j, offset;
   double acc;
   offset = 0;
@@ -346,7 +346,7 @@ void colcentermeans(struct matrix *a, struct matrix *b, double *m) {
 }
 
 // Weighting rows of a with values in c and send results in b.
-void rowweighting(struct matrix *a, struct matrix *b, double *w) {
+void rowweighting(matrix *a, matrix *b, double *w) {
   unsigned int i, j, offset;
   for (i = 0; i < a->nr; i++) {
     offset = i;
@@ -357,7 +357,7 @@ void rowweighting(struct matrix *a, struct matrix *b, double *w) {
 }
 
 // Weighting columns of a on values in c.
-void colweighting(struct matrix *a, struct matrix *b, double *w) {
+void colweighting(matrix *a, matrix *b, double *w) {
   unsigned int i, j, offset;
   offset = 0;
   for (j = 0; j < a->nc; j++, offset += a->nr)
@@ -367,7 +367,7 @@ void colweighting(struct matrix *a, struct matrix *b, double *w) {
 }
 
 // Matrix addition.
-void addmatrix(struct matrix *a, struct matrix *b, struct matrix *c) {
+void addmatrix(matrix *a, matrix *b, matrix *c) {
   unsigned int i, n = a->nr * a->nc;
   for (i = 0; i < n; i++)
     c->v[i] = a->v[i] + b->v[i];
@@ -375,7 +375,7 @@ void addmatrix(struct matrix *a, struct matrix *b, struct matrix *c) {
 }
 
 // Matrix subtraction.
-void subtractmatrix(struct matrix *a, struct matrix *b, struct matrix *c) {
+void subtractmatrix(matrix *a, matrix *b, matrix *c) {
   unsigned int i, n = a->nr * a->nc;
   for (i = 0; i < n; i++)
     c->v[i] = a->v[i] - b->v[i];
@@ -383,7 +383,7 @@ void subtractmatrix(struct matrix *a, struct matrix *b, struct matrix *c) {
 }
 
 // Product by a scalar.
-void matrixscalar(struct matrix *a, double b, struct matrix *c) {
+void matrixscalar(matrix *a, double b, matrix *c) {
   unsigned int i, n = a->nr * a->nc;
   for (i = 0; i < n; i++)
     c->v[i] = a->v[i] * b;
@@ -391,7 +391,7 @@ void matrixscalar(struct matrix *a, double b, struct matrix *c) {
 }
 
 // Dot product.
-void matrixdotproduct(struct matrix *a, struct matrix *b, struct matrix *c) {
+void matrixdotproduct(matrix *a, matrix *b, matrix *c) {
   unsigned int i, n = a->nr * a->nc;
   for (i = 0; i < n; i++)
     c->v[i] = a->v[i] * b->v[i];
@@ -399,7 +399,7 @@ void matrixdotproduct(struct matrix *a, struct matrix *b, struct matrix *c) {
 }
 
 // Matrix product.
-void matrixproduct(struct matrix *a, struct matrix *b, struct matrix *c) {
+void matrixproduct(matrix *a, matrix *b, matrix *c) {
   unsigned int i, j, k, offset1, offset2, offset3;
   double acc;
   for (i = 0; i < c->nr; i++) {
@@ -416,7 +416,7 @@ void matrixproduct(struct matrix *a, struct matrix *b, struct matrix *c) {
   return;
 }
 
-void matrixweightedproduct(struct matrix *a, double*d, struct matrix *b, struct matrix *c) {
+void matrixweightedproduct(matrix *a, double*d, matrix *b, matrix *c) {
   unsigned int i, j, k, offset1, offset2, offset3;
   double acc;
   for (i = 0; i < c->nr; i++) {
@@ -434,7 +434,7 @@ void matrixweightedproduct(struct matrix *a, double*d, struct matrix *b, struct 
 }
 
 // Product C=A'B
-void matrixtransproduct(struct matrix *a, struct matrix *b, struct matrix *c) {
+void matrixtransproduct(matrix *a, matrix *b, matrix *c) {
   unsigned int i, j, k, offset1, offset2, offset3;
   double acc;
   offset1 = 0;
@@ -452,7 +452,7 @@ void matrixtransproduct(struct matrix *a, struct matrix *b, struct matrix *c) {
 }
 
 // Product C=AB'
-void matrixproducttrans(struct matrix *a, struct matrix *b, struct matrix *c) {
+void matrixproducttrans(matrix *a, matrix *b, matrix *c) {
   unsigned int i, j, k, offset1, offset2, offset3;
   double acc;
   for (i = 0; i < c->nr; i++) {
@@ -470,7 +470,7 @@ void matrixproducttrans(struct matrix *a, struct matrix *b, struct matrix *c) {
 }
 
 // Product C=A[diag(d)]B'
-void matrixproductweightedtrans(struct matrix *a, double *d, struct matrix *b, struct matrix *c) {
+void matrixproductweightedtrans(matrix *a, double *d, matrix *b, matrix *c) {
   unsigned int i, j, k, offset1, offset2, offset3;
   double acc;
   for (i = 0; i < c->nr; i++) {
@@ -488,7 +488,7 @@ void matrixproductweightedtrans(struct matrix *a, double *d, struct matrix *b, s
 }
 
 // Extract the diagonal of a matrix.
-void getdiagonal(struct matrix *mat, double *a) {
+void getdiagonal(matrix *mat, double *a) {
   unsigned int i, order, offset = 0;
   order = (mat->nr < mat->nc)?mat->nr:mat->nc;
   for (i = 0; i < order; i++, offset += mat->nr)
@@ -497,7 +497,7 @@ void getdiagonal(struct matrix *mat, double *a) {
 }
 
 // Extract a row (ATTENTION: indices begin with 0 and < mat->nr)
-void getrow(struct matrix *mat, unsigned int i, double *a) {
+void getrow(matrix *mat, unsigned int i, double *a) {
   unsigned int j, offset = i;
   for (j = 0; j < mat->nc; j++, offset += mat->nr)
     a[j] = mat->v[offset];
@@ -505,7 +505,7 @@ void getrow(struct matrix *mat, unsigned int i, double *a) {
 }
 
 // Extract a column (ATTENTION: indices begin with 0 and < nrow)
-void getcolumn(struct matrix *mat, unsigned int j, double *a) {
+void getcolumn(matrix *mat, unsigned int j, double *a) {
   unsigned int i = 0, offset = mat->nr * i;
   for (; i < mat->nc; i++, offset++)
     a[i] = mat->v[offset];
@@ -513,7 +513,7 @@ void getcolumn(struct matrix *mat, unsigned int j, double *a) {
 }
 
 // Function to create an AEM binary matrix.
-void InfluenceRD(struct dgraph* dgr, unsigned int e, int* out) {
+void InfluenceRD(dgraph* dgr, unsigned int e, int* out) {
   unsigned int i;
   out[dgr->de[e].d->id] = 1;
   if(dgr->de[e].d->nd)
@@ -543,7 +543,7 @@ unsigned int rselect(double* prob, unsigned int n) {
 // Function to evolve a qualitative character along a rooted phylogenetic tree.
 // That function uses the dgraph framework and its is the user's responsability to make sure that the directed graph pointed by dgr is indeed a tree.
 // The function will otherwise fail to work correctly.
-void evolveqcalongtree(struct dgraph* dgr, double* tw, unsigned int ntw, unsigned int sr, unsigned int nnv) {
+void evolveqcalongtree(dgraph* dgr, double* tw, unsigned int ntw, unsigned int sr, unsigned int nnv) {
   unsigned int i, j;
   if(dgr->dn[sr].nd) {
     for(i = 0; i < dgr->dn[sr].nd; i++) {
@@ -576,7 +576,7 @@ void OUdedgecoefs(double* ev, double* lg, unsigned int ne, double alpha, double 
   return;
 }
 
-void simOUprocess(struct dgraph* dgr, unsigned int sr, unsigned int n, double* out) {
+void simOUprocess(dgraph* dgr, unsigned int sr, unsigned int n, double* out) {
   unsigned int i, j, top, d;
   double *lc, opt;
   if(dgr->dn[sr].nd) {
@@ -645,15 +645,15 @@ void Psquared(double* p, double* o, int* n, double* res) {
 #ifdef with_testing
 // Printing functions to diagnose whether the directed edges and vertices are correctly described.
 // Print directed edges and the vertices they point at down- and upward.
-void checkdedge(struct dedge* de, unsigned int ne) {
+void checkdedge(dedge* de, unsigned int ne) {
   unsigned int i;
-  printf("Checking %d edge(s) of size %d starting at address %p\n",(unsigned int)ne,(unsigned int)sizeof(struct dedge),de);
+  printf("Checking %d edge(s) of size %d starting at address %p\n",(unsigned int)ne,(unsigned int)sizeof(dedge),de);
   for(i = 0; i < ne; i++)
     printf("E%d downward N%d and upward N%d\n",de[i].id,de[i].u->id+1,de[i].d->id+1);
   return;
 }
 
-void checkdedgevalues(struct dedge* de, unsigned int ne) {
+void checkdedgevalues(dedge* de, unsigned int ne) {
   unsigned int i, j;
   for(i = 0; i < ne; i++) {
     printf("E%d: ",de[i].id);
@@ -668,9 +668,9 @@ void checkdedgevalues(struct dedge* de, unsigned int ne) {
 }
 
 // Print directed vertices pointing through which edge to which vertices up- and downward.
-void checkdvertex(struct dvertex* dn, unsigned int nn) {
+void checkdvertex(dvertex* dn, unsigned int nn) {
   unsigned int i, j;
-  printf("Checking %d vertex(s) of size %d starting at address %p\n",(unsigned int)nn,(unsigned int)sizeof(struct dvertex),dn);
+  printf("Checking %d vertex(s) of size %d starting at address %p\n",(unsigned int)nn,(unsigned int)sizeof(dvertex),dn);
   for(i = 0; i < nn; i++) {
     if(dn[i].nu > 0) {
       for(j = 0; j < dn[i].nu; j++)
@@ -688,7 +688,7 @@ void checkdvertex(struct dvertex* dn, unsigned int nn) {
   return;
 }
 
-void checkdvertexvalues(struct dvertex* dn, unsigned int nn) {
+void checkdvertexvalues(dvertex* dn, unsigned int nn) {
   unsigned int i, j;
   for(i = 0; i < nn; i++) {
     printf("N%d: ",dn[i].id);
@@ -702,7 +702,7 @@ void checkdvertexvalues(struct dvertex* dn, unsigned int nn) {
   return;
 }
 
-void checkdgraph(struct dgraph* dgr) {
+void checkdgraph(dgraph* dgr) {
   printf("Checking edges:\n");
   checkdedge(dgr->de,dgr->ne);
   printf("Checking vertices:\n");
@@ -710,7 +710,7 @@ void checkdgraph(struct dgraph* dgr) {
   return;
 }
 
-void checkdgraphvalues(struct dgraph* dgr) {
+void checkdgraphvalues(dgraph* dgr) {
   printf("Checking edge values:\n");
   checkdedgevalues(dgr->de,dgr->ne);
   printf("Checking vertex values:\n");
@@ -718,7 +718,7 @@ void checkdgraphvalues(struct dgraph* dgr) {
   return;
 }
 
-void checkmatrix(struct matrix* mat) {
+void checkmatrix(matrix* mat) {
   unsigned int i, j, offset;
   printf("Checking %d x %d matrix %s stored at address %p:\n",mat->nr,mat->nc,mat->id,mat);
   if(mat->nr && mat->nc) {
@@ -735,7 +735,7 @@ void checkmatrix(struct matrix* mat) {
 }
 /*
 void test_function(double *mat1, double *mat2, double *res, int *rmat1, int *cmat2, int *p) {
-  struct matrix a, b, c;
+  matrix a, b, c;
   a = assignmatrix("A",(unsigned int)(*rmat1),(unsigned int)(*p),mat1);
   b = assignmatrix("B",(unsigned int)(*p),(unsigned int)(*cmat2),mat2);
   c = assignmatrix("C",(unsigned int)(*rmat1),(unsigned int)(*cmat2),res);
@@ -747,7 +747,7 @@ void test_function(double *mat1, double *mat2, double *res, int *rmat1, int *cma
 }
 
 void test_function2(double *mat1, double *mat2, double *res, int *rmat1, int *rmat2, int *cols) {
-  struct matrix a, b, c;
+  matrix a, b, c;
   a = assignmatrix("A",(unsigned int)(*rmat1),(unsigned int)(*cols),mat1);
   b = assignmatrix("B",(unsigned int)(*rmat2),(unsigned int)(*cols),mat2);
   c = assignmatrix("C",(unsigned int)(*rmat1),(unsigned int)(*rmat2),res);
@@ -759,7 +759,7 @@ void test_function2(double *mat1, double *mat2, double *res, int *rmat1, int *rm
 }
 
 void test_function3(double *mat1, double *d, double *mat2, double *res, int *rmat1, int *rmat2, int *cols) {
-  struct matrix a, b, c;
+  matrix a, b, c;
   a = assignmatrix("A",(unsigned int)(*rmat1),(unsigned int)(*cols),mat1);
   b = assignmatrix("B",(unsigned int)(*rmat2),(unsigned int)(*cols),mat2);
   c = assignmatrix("C",(unsigned int)(*rmat1),(unsigned int)(*rmat2),res);
@@ -771,7 +771,7 @@ void test_function3(double *mat1, double *d, double *mat2, double *res, int *rma
 }
 
 void test_function4(double *mat1, int* dimmat1, double *m) {
-  struct matrix a;
+  matrix a;
   a = assignmatrix("A",(unsigned int)(dimmat1[0]),(unsigned int)(dimmat1[1]),mat1);
   checkmatrix(&a);
   rowcentermeans(&a,&a,m);
@@ -779,7 +779,7 @@ void test_function4(double *mat1, int* dimmat1, double *m) {
 }
 
 void test_function5(double *mat1, int* dimmat1, double *m) {
-  struct matrix a;
+  matrix a;
   a = assignmatrix("A",(unsigned int)(dimmat1[0]),(unsigned int)(dimmat1[1]),mat1);
   checkmatrix(&a);
   colcentermeans(&a,&a,m);
@@ -787,7 +787,7 @@ void test_function5(double *mat1, int* dimmat1, double *m) {
 }
 
 void test_function6(double *mat1, double *d, double *mat2, double *res, int *rmat1, int *cmat2, int *crmats) {
-  struct matrix a, b, c;
+  matrix a, b, c;
   a = assignmatrix("A",(unsigned int)(*rmat1),(unsigned int)(*crmats),mat1);
   b = assignmatrix("B",(unsigned int)(*crmats),(unsigned int)(*cmat2),mat2);
   c = assignmatrix("C",(unsigned int)(*rmat1),(unsigned int)(*cmat2),res);
@@ -801,9 +801,9 @@ void test_function6(double *mat1, double *d, double *mat2, double *res, int *rma
 #endif
 
 void PEMInfMat(int* from, int* to, int* ne, int* nn, int* out) {
-  struct dgraph* dgr;
+  dgraph* dgr;
   unsigned int i, idx;
-  dgr = (struct dgraph*)Calloc(1,struct dgraph);
+  dgr = (dgraph*)Calloc(1,dgraph);
   *dgr = initdgraph(NULL,*ne,NULL,*nn,NULL);
   makedgraph(from,to,dgr);
   for(i = 0, idx = 0; i < *ne; i++, idx += *nn)
@@ -815,9 +815,9 @@ void PEMInfMat(int* from, int* to, int* ne, int* nn, int* out) {
 
 // Evolve a qualititave character along a phylogenetic tree.
 void EvolveQC(int* from, int* to, int* ne, int* nn, double* nv, double* tw, int* ntw, int* anc, int* n, int* sr) {
-  struct dgraph* dgr;
+  dgraph* dgr;
   unsigned int i, nvidx, sri, anci;
-  dgr = (struct dgraph*)Calloc(1,struct dgraph);
+  dgr = (dgraph*)Calloc(1,dgraph);
   *dgr = initdgraph("Tree",*ne,NULL,*nn,NULL);
   makedgraph(from,to,dgr);
   assigndvertexvalues(dgr->dn,dgr->nn,nv,*n);
@@ -834,10 +834,10 @@ void EvolveQC(int* from, int* to, int* ne, int* nn, double* nv, double* tw, int*
 }
 
 void OUsim(int* from, int* to, int* ne, int* nn, double* lg, double* alpha, double* sigma, double* opt, int* n, int* sr, double* out) {
-  struct dgraph* dgr;
+  dgraph* dgr;
   unsigned int i, idx, sri;
   double* ev;
-  dgr = (struct dgraph*)Calloc(1,struct dgraph);
+  dgr = (dgraph*)Calloc(1,dgraph);
   *dgr = initdgraph("Tree",*ne,NULL,*nn,NULL);
   makedgraph(from,to,dgr);
   ev = (double*)Calloc(3*(*ne),double);
@@ -854,7 +854,7 @@ void OUsim(int* from, int* to, int* ne, int* nn, double* lg, double* alpha, doub
 }
 
 void PEMbuildC(int* ne, int* nsp, double* Bc, double* m, double* d, double* a, double* psi, double* w, double* BcW) {
-  struct matrix BcMat, BcWMat;
+  matrix BcMat, BcWMat;
   BcMat = assignmatrix("Bc",(unsigned int)(*nsp),(unsigned int)(*ne),Bc);
   colcentermeans(&BcMat,&BcMat,m);
   BcWMat = assignmatrix("BcW",(unsigned int)(*nsp),(unsigned int)(*ne),BcW);
@@ -864,7 +864,7 @@ void PEMbuildC(int* ne, int* nsp, double* Bc, double* m, double* d, double* a, d
 }
 
 void PEMupdateC(int* ne, int* nsp, double* Bc, double* d, double* a, double* psi, double* w, double* BcW) {
-  struct matrix BcMat, BcWMat;
+  matrix BcMat, BcWMat;
   BcMat = assignmatrix("Bc",(unsigned int)(*nsp),(unsigned int)(*ne),Bc);
   BcWMat = assignmatrix("BcW",(unsigned int)(*nsp),(unsigned int)(*ne),BcW);
   PEMweight(d,ne,a,psi,w);
@@ -873,7 +873,7 @@ void PEMupdateC(int* ne, int* nsp, double* Bc, double* d, double* a, double* psi
 }
 
 void PEMLoc2Scores(int* ne, double* mw, int* ntgt, double* loc, double* a, double* psi, int* nd, double* d, double* vt, double* sc) {
-  struct matrix locMat, uMat, vtMat, scMat;
+  matrix locMat, uMat, vtMat, scMat;
   int i, j, offset;
   locMat = assignmatrix("loc",(unsigned int)(*ntgt),(unsigned int)(*ne),loc);
   vtMat = assignmatrix("vt",(unsigned int)(*nd),(unsigned int)(*ne),vt);
