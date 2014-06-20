@@ -462,7 +462,7 @@ void matrixproducttrans(matrix *a, matrix *b, matrix *c) {
       offset2 = 0;
       offset3 = 0;
       for(k = 0; k < a->nc; k++, offset2 += a->nr, offset3 += b->nr)
-	acc = acc += a->v[i+offset2] * b->v[j+offset3];
+	acc += a->v[i+offset2] * b->v[j+offset3];
       c->v[i+offset1] = acc;
     }
   }
@@ -480,7 +480,7 @@ void matrixproductweightedtrans(matrix *a, double *d, matrix *b, matrix *c) {
       offset2 = 0;
       offset3 = 0;
       for(k = 0; k < a->nc; k++, offset2 += a->nr, offset3 += b->nr)
-	acc = acc += a->v[i+offset2] * d[k] * b->v[j+offset3];
+	acc += a->v[i+offset2] * d[k] * b->v[j+offset3];
       c->v[i+offset1] = acc;
     }
   }
@@ -526,7 +526,9 @@ void InfluenceRD(dgraph* dgr, unsigned int e, int* out) {
 unsigned int rselect(double* prob, unsigned int n) {
   unsigned int i;
   double rnb, acc = 0.0;
+  GetRNGstate();
   rnb = runif(0.0,1.0);
+  PutRNGstate();
   for(i = 0; i < n; i++) {
     acc += prob[i];
     if(rnb <= acc)
