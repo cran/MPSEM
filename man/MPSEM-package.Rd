@@ -50,6 +50,9 @@
   operation on graphs (see \link{graph-functions}), calculate
   influence matrix (\code{\link{PEMInfluence}}), and simulate trait
   values (see \link{trait-simulator}).
+
+  A phylogenetic modeling tutorial using \code{MPSEM} is available as a
+  vignette (see example below).
 }
 \references{
   Guénard, G., Legendre, P., and Peres-Neto, P. 2013. Phylogenetic
@@ -67,3 +70,8 @@
 }
 \author{ Guillaume Guénard, Département des sciences biologiques,
   Université de Montréal, Montréal, Québec, Canada. }
+
+\examples{
+  ### To view MPSEM tutorial
+  vignette("MPSEM")
+}

@@ -1,7 +1,6 @@
-# Default NAMESPACE created by R
-# Remove the previous line if you edit this file
-
-# Export all names
+### MPSEM ### Guillaume Guenard - Universite de Montreal
+#
 import(ape,MASS)
+# Export all names
 exportPattern(".")
 useDynLib(MPSEM)

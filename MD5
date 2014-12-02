@@ -1,12 +1,15 @@
-00097dcbbd8f1b07ce5d99e9d3527307 *DESCRIPTION
-7eec0428ab4484271ebd11f023418131 *NAMESPACE
+399c681d343dede91632a51073ca37f0 *DESCRIPTION
+1b9e1f897b7e39bb55a47021963258a2 *NAMESPACE
 15adb96639345e379d89f0e5c91b45bc *R/GraphFunctions.R
 2ade300bdadc2ff18bcfad45216fd642 *R/MPSEM.R
 0573504ccac820e37f0b41fd64028f8c *R/OUSim.R
 312adf0c249b10003f9de0673dfe7d71 *R/PEM.R
 adf373d46a03d089b3e7eb0a373b53f0 *R/lmutils.R
+1f597f3c9b64817e33fffa3d4ba5fed4 *build/vignette.rds
+ba5ca9f1a90058d8caf425101a2cc004 *inst/doc/MPSEM.Rmd
+80b794889378e8687b6c2ca1ecfbba6f *inst/doc/MPSEM.pdf
 d648fab4fab7da61e68aff04d66da6a3 *man/GraphFunctions.Rd
-de55e076f7a7bccb4e40f15c069bc888 *man/MPSEM-package.Rd
+dd8af38eab397c4ab1cb40a86faa7aef *man/MPSEM-package.Rd
 db174c527614ec1919ece73191ef1b63 *man/OUSim.Rd
 c0e1906ea512bd09dda582d6a2ef710d *man/PEM-class.Rd
 38cc85edf2d180e6b4f28f02d85a7de8 *man/PEM.Rd
@@ -14,3 +17,6 @@ d832ad84a09db398aa98a2c2fcc17016 *man/graph-class.Rd
 9742629a1acc2da344dbbe1172ca77ff *man/lmutils.Rd
 8ccfe14d93dfd403f541f103c7f279e8 *src/MPSEM.c
 c12539599680be8eb36b029e67ebd105 *src/MPSEM.h
+ba5ca9f1a90058d8caf425101a2cc004 *vignettes/MPSEM.Rmd
+dcccd5ccf51e900526dd2447e8e7d930 *vignettes/MPSEM.bib
+5765cacb6451dd776eb80bb4d042b3d3 *vignettes/MPSEM.html
