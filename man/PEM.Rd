@@ -7,6 +7,7 @@
 \alias{ PEM.fitSimple }
 \alias{ PEM.forcedSimple }
 \alias{ getGraphLocations }
+\alias{ getAncGraphLocations }
 \alias{ Locations2PEMscores }
 \title{ Phylogenetic Eigenvector Map }
 \description{
@@ -24,6 +25,7 @@
   PEM.forcedSimple(y, x, w, d = "distance", sp = "species", a = 0, psi = 1,
   tol = .Machine$double.eps^0.5)
   getGraphLocations(tpall, targets)
+  getAncGraphLocations(x, tpall)
   Locations2PEMscores(object, gsc)
 }
 \arguments{
@@ -33,7 +35,8 @@
     phylogenetic graph. }
   \item{ object }{ A \code{\link{PEM-class}} object containing a Phylogenetic
     Eigenvector Map. }
-  \item{ y }{ A response variable. }
+  \item{ y }{ One or many response variable(s) in the form of a numeric
+    vector or a \code{\link{matrix}}, respectively. }
   \item{ mroot }{ Boolean (TRUE or FALSE) specifying whether multiple rooting is
     allowed. }
   \item{ d }{ The name of the member of \code{x$edge} where the
@@ -88,7 +91,11 @@
   Functions \code{\link{getGraphLocations}} returns the coordinates of a
   species in terms of its position with respect to the influence matrix
   while function \code{\link{Locations2PEMscores}} transforms these
-  coordinates into sets of scores that can be used to make predictions.
+  coordinates into sets of scores that can be used to make
+  predictions. Function \code{\link{getAncGraphLocations}} produce the
+  same output as \code{\link{getGraphLocations}}, but of the ancestral
+  species (i.e. the nodes of the phylogeny) in order to estimate
+  ancestral trait values.
 }
 \value{
   Function \code{\link{PEMInfluence}} returns the influence matrix of
@@ -185,4 +192,13 @@ axis(1,label=c("-4","-2","0","2","4"),at=c(-4,-2,0,2,4)) ; abline(v=0)
 points(x=y,y=1:7,xlim=c(-2,2),pch=21,bg="black")             # Observed values
 text("B)",x=-3.5,y=7,cex=1.5,xpd=TRUE) ; text("Trait value",x=0,y=-0.5,cex=1.25,xpd=TRUE)
 points(x=ypred,y=c(0.5,5.5,3.5),pch=23,bg="white",cex=1.25)  # Predicted values
+#
+## Estimating ancestral trait values:
+ANCloc <- getAncGraphLocations(x)
+PEMfsAnc <- PEM.fitSimple(y=y,x=NULL,w=ANCloc$x,d="distance",sp="species",lower=0,upper=1)
+PEMfsAnc$optim
+#
+PEManc1 <- Locations2PEMscores(PEMfsAnc, ANCloc)
+y_anc <- predict(object=PEMfsAnc,targets=ANCloc,lmobject=lm1,interval="confidence")
+#
 }

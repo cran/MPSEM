@@ -1,4 +1,4 @@
-%% LyX 2.0.6 created this file.  For more info, see http://www.lyx.org/.
+%% LyX 2.1.3 created this file.  For more info, see http://www.lyx.org/.
 %% Do not edit unless you really know what you are doing.
 \documentclass[english]{article}
 \usepackage[T1]{fontenc}
@@ -17,7 +17,7 @@
 \begin{document}
 
 \title{A phylogenetic modelling tutorial using Phylogenetic Eigenvector
-Maps (PEM) as implemented in R package MPSEM ($0.2$-$6$).}
+Maps (PEM) as implemented in R package MPSEM ($0.3$-$1$).}
 
 
 \author{Guillaume Guénard}
@@ -220,7 +220,7 @@ for(i in 1:ntrials) {
 rm(d,a,psi,cc,ll,trial,ntrials,nd,w,i)
 @
 
-\caption{Values of the edge weighting function used as a model of trait evolution
+\protect\caption{Values of the edge weighting function used as a model of trait evolution
 by {\tt MPSEM} for different values of steepness ($a$) and evolution
 rate ($\psi$).\label{fig:Edge-weighting-function}}
 \end{figure}
@@ -353,15 +353,11 @@ by the second eigenvector essentially contrasts tapirs and Rhinocerotids.
 Because users do often not have information about the best set of
 weighting function parameters to use for modelling, {\tt MPSEM} as
 has a function called {\tt PEM.fitSimple()} that allows them to empirically
-estimate a single value of parameter $a$ for the whole phylogeny%
-\footnote{Function {\tt PEM.fitSimple()} does not estimate parameter $\psi$
+estimate a single value of parameter $a$ for the whole phylogeny\footnote{Function {\tt PEM.fitSimple()} does not estimate parameter $\psi$
 because the latter has no effect when its value is assumed to be constant
-throughout the phylogeny.%
-} using restricted maximum likelihood%
-\footnote{A function to estimate different sets of weighting function parameters
+throughout the phylogeny.} using restricted maximum likelihood\footnote{A function to estimate different sets of weighting function parameters
 for different portions of the phylogeny has yet to be included in
-{\tt MPSEM}.%
-}. That function requires a response variable that will be used to
+{\tt MPSEM}.}. That function requires a response variable that will be used to
 optimize the steepness parameter (here the $\log_{10}$ neonate weight)
 as well as lower and upper bounds for the admissible parameter values
 and is called as follows:
@@ -506,7 +502,7 @@ arrows(x0 = perissodactyla.data[,"lower"],x1 = perissodactyla.data[,"upper"],
        length = 0.05,angle = 90,code = 3)
 @
 
-\caption{Predicted and observed $\log_{10}$ neonatal body mass for \Sexpr{nrow(perissodactyla.data)}
+\protect\caption{Predicted and observed $\log_{10}$ neonatal body mass for \Sexpr{nrow(perissodactyla.data)}
 odd-toed ungulate species.\label{fig:Predicted-and-observed}}
 \end{figure}
 . From the present cross-validation, we found that the $\log$ of

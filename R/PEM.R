@@ -290,6 +290,13 @@ getGraphLocations <- function(tpall,targets) {
   return(list(x = xmodel, locations = loc, LCA2target = dtt))
 }
 #
+getAncGraphLocations <- function(x, tpall) {
+  if(missing(x) && !missing(tpall))
+    x <- Phylo2DirectedGraph(tpall)
+  loc <- PEMInfluence(x)[!x$vertex$species,] * x$edge$distance
+  return(list(x = x, locations = loc, LCA2target = numeric(nrow(loc))))
+}
+#
 Locations2PEMscores <- function(object, gsc) {
   if(object$ne != ncol(gsc$locations))
     stop("Numbers of edge coordinates mismatch: gsc$locations has ",ncol(gsc$locations)," columns while the phylogenetic graph has ",object$ne," edges.")
