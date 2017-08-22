@@ -122,8 +122,8 @@ for(i in c("A","B","C","D","E","F","G","H","I"))
   print(collapse.vertex(x,id=i))
 #
 if(require(ape)) {
-  tree1 <-tree.build(paste("(((A:0.15,B:0.2)N4:0.15,C:0.35)N2:0.25,((D:0.25,E:0.1)N5:0.3,",
-                           "(F:0.15,G:0.2)N6:0.3)N3:0.1)N1;",sep=""))
+  tree1 <- read.tree(text=paste("(((A:0.15,B:0.2)N4:0.15,C:0.35)N2:0.25,((D:0.25,E:0.1)N5:0.3,",
+                                "(F:0.15,G:0.2)N6:0.3)N3:0.1)N1;",sep=""))
   x <- Phylo2DirectedGraph(tree1)
   print(x)
 }

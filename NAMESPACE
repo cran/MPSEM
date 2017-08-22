@@ -15,4 +15,4 @@ S3method(print, PEM)
 S3method(print, graph)
 #
 # Load dynamic library
-useDynLib(MPSEM)
+useDynLib(MPSEM, .registration = TRUE)
