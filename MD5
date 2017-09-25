@@ -1,4 +1,4 @@
-b24b4071758b68007430d374f679769b *DESCRIPTION
+f725cf7b6c633d56713a6779e681decf *DESCRIPTION
 3cc0f5001b073abd89174a4c25920efb *NAMESPACE
 15adb96639345e379d89f0e5c91b45bc *R/GraphFunctions.R
 2ade300bdadc2ff18bcfad45216fd642 *R/MPSEM.R
@@ -8,15 +8,15 @@ adf373d46a03d089b3e7eb0a373b53f0 *R/lmutils.R
 82c7d8b7d7471ceaf7b2863f9da583d1 *build/vignette.rds
 316251057a6372697640601ccf52c162 *inst/doc/MPSEM.R
 dd87e88056b160663e743bbf7644ee08 *inst/doc/MPSEM.Rnw
-af738a9ddae1c043802518ebbd149417 *inst/doc/MPSEM.pdf
+5c11fabe0c186026aa50b728aaba5792 *inst/doc/MPSEM.pdf
 a367392238428b1032139f33bff36416 *man/GraphFunctions.Rd
 dd8af38eab397c4ab1cb40a86faa7aef *man/MPSEM-package.Rd
 db174c527614ec1919ece73191ef1b63 *man/OUSim.Rd
 c0e1906ea512bd09dda582d6a2ef710d *man/PEM-class.Rd
-eca3880ddd5ab4a60c7df1ec656a04a2 *man/PEM.Rd
+31e842457575b342360a0d2c079ea3c7 *man/PEM.Rd
 d832ad84a09db398aa98a2c2fcc17016 *man/graph-class.Rd
 9742629a1acc2da344dbbe1172ca77ff *man/lmutils.Rd
-8ccfe14d93dfd403f541f103c7f279e8 *src/MPSEM.c
+5fb8121e9f601bff9cd2546f72a23efd *src/MPSEM.c
 c12539599680be8eb36b029e67ebd105 *src/MPSEM.h
 ccf84531d290312f31808b1a23b3ba7b *src/registerDynamicSymbol.c
 dd87e88056b160663e743bbf7644ee08 *vignettes/MPSEM.Rnw

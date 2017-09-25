@@ -122,8 +122,8 @@
   traits. Meth. Ecol. Evol. In press.
 }
 \examples{
-t1 <- tree.build(paste("(((A:0.15,B:0.2)N4:0.15,C:0.35)N2:0.25,((D:0.25,E:0.1)N5:0.3,",
-                       "(F:0.15,G:0.2)N6:0.3)N3:0.1)N1;",sep=""))
+t1 <- read.tree(text=paste("(((A:0.15,B:0.2)N4:0.15,C:0.35)N2:0.25,((D:0.25,E:0.1)N5:0.3,",
+                           "(F:0.15,G:0.2)N6:0.3)N3:0.1)N1;",sep=""))
 x <- Phylo2DirectedGraph(t1)
 #
 ## Calculates the (binary) influence matrix
@@ -153,9 +153,10 @@ PEMfrc1 <- PEM.forcedSimple(y=y,x=NULL,w=x,d="distance",sp="species",a=0)
 PEMfrc1$x$edge$a   # Steepness parameter forced for each individual edge.
 #
 ## Get graph locations for target species X, Y, and Z
-tpAll <- tree.build(paste("((X:0.45,((A:0.15,B:0.2)N4:0.15,(C:0.25,Z:0.2)NZ:0.1)N2:0.05)NX:0.2,",
-                          "(((D:0.25,E:0.1)N5:0.05,Y:0.25)NY:0.25,",
-                          "(F:0.15,G:0.2)N6:0.3)N3:0.1)N1;",sep=""))
+tpAll <- read.tree(text=paste("((X:0.45,((A:0.15,B:0.2)N4:0.15,",
+                              "(C:0.25,Z:0.2)NZ:0.1)N2:0.05)NX:0.2,",
+                              "(((D:0.25,E:0.1)N5:0.05,Y:0.25)NY:0.25,",
+                              "(F:0.15,G:0.2)N6:0.3)N3:0.1)N1;",sep=""))
 grloc <- getGraphLocations(tpAll, c("X","Y","Z"))
 #
 PEMfs2 <- PEM.fitSimple(y=y,x=NULL,w=grloc$x,d="distance",sp="species",lower=0,upper=1)

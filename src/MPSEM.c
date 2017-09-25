@@ -596,7 +596,6 @@ void simOUprocess(dgraph* dgr, unsigned int sr, unsigned int n, double* out) {
 
 void PEMvar(double* d, int* nd, double* a, double* psi, double* res) {
   int i;
-  double x, y;
   for(i = 0; i < *nd ; i++) {
     if(d[i]!=0.0)
       res[i] = (psi[i])*(psi[i])*R_pow(d[i],1.0-(a[i]));
@@ -818,7 +817,7 @@ void PEMInfMat(int* from, int* to, int* ne, int* nn, int* out) {
 // Evolve a qualititave character along a phylogenetic tree.
 void EvolveQC(int* from, int* to, int* ne, int* nn, double* nv, double* tw, int* ntw, int* anc, int* n, int* sr) {
   dgraph* dgr;
-  unsigned int i, nvidx, sri, anci;
+  unsigned int i, sri, anci;
   dgr = (dgraph*)Calloc(1,dgraph);
   *dgr = initdgraph("Tree",*ne,NULL,*nn,NULL);
   makedgraph(from,to,dgr);
@@ -875,7 +874,7 @@ void PEMupdateC(int* ne, int* nsp, double* Bc, double* d, double* a, double* psi
 }
 
 void PEMLoc2Scores(int* ne, double* mw, int* ntgt, double* loc, double* a, double* psi, int* nd, double* d, double* vt, double* sc) {
-  matrix locMat, uMat, vtMat, scMat;
+  matrix locMat, vtMat, scMat;
   int i, j, offset;
   locMat = assignmatrix("loc",(unsigned int)(*ntgt),(unsigned int)(*ne),loc);
   vtMat = assignmatrix("vt",(unsigned int)(*nd),(unsigned int)(*ne),vt);
