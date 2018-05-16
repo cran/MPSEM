@@ -1,6 +1,6 @@
 Package: MPSEM
-Version: 0.3-3
-Date: 2017-09-25
+Version: 0.3-4
+Date: 2018-05-16
 Type: Package
 Title: Modeling Phylogenetic Signals using Eigenvector Maps
 Author: Guillaume Guenard, with contribution from Pierre Legendre
@@ -12,6 +12,6 @@ VignetteBuilder: knitr
 License: GPL (>= 2)
 LazyLoad: yes
 NeedsCompilation: yes
-Packaged: 2017-09-25 16:05:50 UTC; guenardg
+Packaged: 2018-05-16 20:36:04 UTC; guenardg
 Repository: CRAN
-Date/Publication: 2017-09-25 18:23:06 UTC
+Date/Publication: 2018-05-16 21:25:21 UTC

@@ -17,7 +17,7 @@
 \begin{document}
 
 \title{A phylogenetic modelling tutorial using Phylogenetic Eigenvector
-Maps (PEM) as implemented in R package MPSEM ($0.3$-$2$).}
+Maps (PEM) as implemented in R package MPSEM ($0.3$-$4$).}
 
 \author{Guillaume Guénard}
 

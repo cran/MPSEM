@@ -3,19 +3,13 @@
 \alias{MPSEM-package}
 \alias{MPSEM}
 \docType{package}
-\title{ Modeling Phylogenetic Signals using Eigenvector Maps }
+\title{
+  \packageTitle{MPSEM}
+}
 \description{
-  Computational tools to represent phylogenetic signals using adapted eigenvector maps.
+  \packageDescription{MPSEM}
 }
 \details{
-  \tabular{ll}{
-    Package: \tab MPSEM\cr
-    Type: \tab Package\cr
-    Version: \tab 0.1-2\cr
-    Date: \tab 2013-08-29\cr
-    License: \tab Copyleft\cr
-    LazyLoad: \tab yes\cr
-  }
   Phylogenetic eignevector maps (PEM) is a method for using phylogeny to
   model features of organism, most notably quantitative traits. It
   consists in calculating sets of explanatory variables (eigenvectors)
@@ -47,18 +41,28 @@
   or the Akaike Information Criterion (AIC), respectively.
 
   The package provides low-level utility function for performing
-  operation on graphs (see \link{graph-functions}), calculate
-  influence matrix (\code{\link{PEMInfluence}}), and simulate trait
-  values (see \link{trait-simulator}).
+  operation on graphs (see \link{graph-functions}), calculate influence
+  matrix (\code{\link{PEMInfluence}}), and simulate trait values (see
+  \link{trait-simulator}).
 
   A phylogenetic modeling tutorial using \code{MPSEM} is available as a
   vignette (see example below).
+
+  The DESCRIPTION file:
+  \packageDESCRIPTION{MPSEM}
+  \packageIndices{MPSEM}
+}
+\author{
+  \packageAuthor{MPSEM}
+
+  Maintainer: \packageMaintainer{MPSEM}
 }
 \references{
   Guénard, G., Legendre, P., and Peres-Neto, P. 2013. Phylogenetic
   eigenvector maps (PEM): a framework to model and predict species
   traits. Meth. Ecol. Evol. In press.
 }
+\keyword{ package }
 \seealso{
   Makarenkov, V., Legendre, L. & Desdevise, Y. 2004. Modelling
   phylogenetic relationships using reticulated networks. Zool. Scr. 33:
@@ -68,8 +72,6 @@
   directional spatial processes in ecological data. Ecol. Model. 215:
   325-336
 }
-\author{ Guillaume Guénard, Département des sciences biologiques,
-  Université de Montréal, Montréal, Québec, Canada. }
 
 \examples{
   ### To view MPSEM tutorial
