@@ -1,14 +1,31 @@
-/********************************************************
- C code to handle directed graphs in the context of
- modelling processes modulating trait evolution along
- phylogeny.
- The code is a work in progress and may therefore contain
- more functionalities than those involved in the functions
- functions called from R.
- Guillaume Guenard - Universite de Montreal - 2010-2014
- C Functions
-*********************************************************/
+/*************************************************************************
+ 
+ (c) 2010-2022 Guillaume Guénard
+ Université de Montréal, Montreal, Quebec, Canada
+ 
+ **handles directed graphs in the context of modelling processes modulating**
+ **trait evolution along phylogeny.**
+ 
+ This file is part of MPSEM
+ 
+ MPSEM is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ MPSEM is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with MPSEM.  If not, see <https://www.gnu.org/licenses/>.
+ 
+ C functions definitions
+ 
+ *************************************************************************/
 
+// Includes
 #include<R.h>
 #include<Rmath.h>
 #include"MPSEM.h"
@@ -45,7 +62,8 @@ dedge* initdedge(dedge* de, unsigned int start, unsigned int ne) {
 }
 
 // Assign arrays of values to edges (by address).
-void assigndedgevalues(dedge* de, unsigned int ne, double* ev, unsigned int nev) {
+void assigndedgevalues(dedge* de, unsigned int ne, double* ev,
+                       unsigned int nev) {
   unsigned int i, offset;
   offset = 0;
   for (i = 0; i < ne; i++, offset += nev) {
@@ -97,7 +115,8 @@ dvertex* initdvertex(dvertex* dn, unsigned int start, unsigned int nn) {
 }
 
 // Assign arrays of values to vertices (by address).
-void assigndvertexvalues(dvertex* dn, unsigned int nn, double* nv, unsigned int nnv) {
+void assigndvertexvalues(dvertex* dn, unsigned int nn, double* nv,
+                         unsigned int nnv) {
   unsigned int i, offset;
   offset = 0;
   for (i = 0; i < nn; i++, offset += nnv) {
@@ -108,7 +127,8 @@ void assigndvertexvalues(dvertex* dn, unsigned int nn, double* nv, unsigned int 
 }
 
 // Evaluate the memory requirements and allocate memory for the directed edges.
-dvertex* evalallocdvertexres(dvertex* dn, unsigned int nn, int* a, int* b, unsigned int nr) {
+dvertex* evalallocdvertexres(dvertex* dn, unsigned int nn, int* a, int* b,
+                             unsigned int nr) {
   unsigned int i;
   for(i = 0; i < nr; i++) {
     dn[(unsigned int)(b[i])-1].nu++;
@@ -154,7 +174,8 @@ dvertex* freedvertex(dvertex* dn, unsigned int nn) {
 }
 
 // Build a directed graph.
-dgraph initdgraph(char* id, unsigned int ne, char** elabels, unsigned int nn, char** nlabels) {
+dgraph initdgraph(char* id, unsigned int ne, char** elabels, unsigned int nn,
+                  char** nlabels) {
   dgraph dgr;
   dgr.id = id;
   dgr.ne = ne;
@@ -169,7 +190,8 @@ dgraph initdgraph(char* id, unsigned int ne, char** elabels, unsigned int nn, ch
 }
 
 // Assign arrays of values to edges and vertices of a graph (by address).
-void assigndgraphvalues(dgraph* dgr, double* ev, unsigned int nev, double* nv, unsigned int nnv) {
+void assigndgraphvalues(dgraph* dgr, double* ev, unsigned int nev, double* nv,
+                        unsigned int nnv) {
   assigndedgevalues(dgr->de,dgr->ne,ev,nev);
   assigndvertexvalues(dgr->dn,dgr->nn,nv,nnv);
   return;
@@ -188,7 +210,8 @@ void makedgraph(int* a, int* b, dgraph* dgr) {
   for (i = 0; i < dgr->ne; i++) {
     u = (unsigned int)(a[i])-1;
     d = (unsigned int)(b[i])-1;
-    // Connect each edge to its respective upward and downward vertices and vis-versa.
+    /* Connect each edge to its respective upward and downward vertices, and
+       vis-versa.*/
     dgr->de[i].u = &dgr->dn[u];
     dgr->de[i].d = &dgr->dn[d];
     dgr->dn[u].d[nd[u]++] = &dgr->de[i];
@@ -232,8 +255,9 @@ matrix assignmatrix(char* id, unsigned int nr, unsigned int nc, double* v) {
   return mat;
 }
 
-// Clear a matrix and free its data pointer. Warning: use only when allowed to assign the data pointer.
-// Otherwise, use deassignmatrix() or a segfault will result.
+/* Clears a matrix and free its data pointer. Warning: use only when allowed to
+ * assign the data pointer.
+ * Otherwise, use deassignmatrix() or a segfault will result.*/
 void freematrix(matrix* mat) {
   Free(mat->v);
   if(mat->v != NULL)
@@ -245,8 +269,10 @@ void freematrix(matrix* mat) {
   return;
 }
 
-// Clear a matrix and de-assign its data pointer. Warning: use only when not allowed to assign the data pointer.
-// Otherwise, free the data pointer or use freematrix() to avoid a memory leak.
+/* Clear a matrix and de-assign its data pointer. Warning: use only when not
+ * allowed to assign the data pointer.
+ * Otherwise, free the data pointer or use freematrix() to avoid a memory
+ * leak.*/
 void deassignmatrix(matrix* mat) {
   mat->v = NULL;
   mat->nr = 0;
@@ -312,7 +338,8 @@ void colcentering(matrix *a, matrix *b, double *c) {
   return;
 }
 
-// Calculate the row means of a, center rows of a on them, and write results in b.
+/* Calculate the row means of a, center rows of a on them, and write results
+ * in b.*/
 void rowcentermeans(matrix *a, matrix *b, double *m) {
   unsigned int i, j, offset;
   double acc;
@@ -329,7 +356,8 @@ void rowcentermeans(matrix *a, matrix *b, double *m) {
   return;
 }
 
-// Calculate the column means of a, center rows of a on them, and write results in b.
+/* Calculate the column means of a, center rows of a on them, and write results
+ * in b.*/
 void colcentermeans(matrix *a, matrix *b, double *m) {
   unsigned int i, j, offset;
   double acc;
@@ -416,6 +444,7 @@ void matrixproduct(matrix *a, matrix *b, matrix *c) {
   return;
 }
 
+// Matrix weighted product (C=A[diag(d)]B).
 void matrixweightedproduct(matrix *a, double*d, matrix *b, matrix *c) {
   unsigned int i, j, k, offset1, offset2, offset3;
   double acc;
@@ -433,7 +462,7 @@ void matrixweightedproduct(matrix *a, double*d, matrix *b, matrix *c) {
   return;
 }
 
-// Product C=A'B
+// Matrix first operand transposed product (C=A'B).
 void matrixtransproduct(matrix *a, matrix *b, matrix *c) {
   unsigned int i, j, k, offset1, offset2, offset3;
   double acc;
@@ -451,7 +480,7 @@ void matrixtransproduct(matrix *a, matrix *b, matrix *c) {
   return;
 }
 
-// Product C=AB'
+// Matrix second operand transposed product (C=AB').
 void matrixproducttrans(matrix *a, matrix *b, matrix *c) {
   unsigned int i, j, k, offset1, offset2, offset3;
   double acc;
@@ -469,7 +498,7 @@ void matrixproducttrans(matrix *a, matrix *b, matrix *c) {
   return;
 }
 
-// Product C=A[diag(d)]B'
+// Matrix weighted second operand transposed product (C=A[diag(d)]B').
 void matrixproductweightedtrans(matrix *a, double *d, matrix *b, matrix *c) {
   unsigned int i, j, k, offset1, offset2, offset3;
   double acc;
@@ -496,7 +525,7 @@ void getdiagonal(matrix *mat, double *a) {
   return;
 }
 
-// Extract a row (ATTENTION: indices begin with 0 and < mat->nr)
+// Extract a row (WARNING: indices begin with 0 and < mat->nr)
 void getrow(matrix *mat, unsigned int i, double *a) {
   unsigned int j, offset = i;
   for (j = 0; j < mat->nc; j++, offset += mat->nr)
@@ -504,7 +533,7 @@ void getrow(matrix *mat, unsigned int i, double *a) {
   return;
 }
 
-// Extract a column (ATTENTION: indices begin with 0 and < nrow)
+// Extract a column (WARNING: indices begin with 0 and < nrow)
 void getcolumn(matrix *mat, unsigned int j, double *a) {
   unsigned int i = 0, offset = mat->nr * i;
   for (; i < mat->nc; i++, offset++)
@@ -512,7 +541,7 @@ void getcolumn(matrix *mat, unsigned int j, double *a) {
   return;
 }
 
-// Function to create an AEM binary matrix.
+// Function to calculate the graph's influence matrix.
 void InfluenceRD(dgraph* dgr, unsigned int e, int* out) {
   unsigned int i;
   out[dgr->de[e].d->id] = 1;
@@ -522,7 +551,8 @@ void InfluenceRD(dgraph* dgr, unsigned int e, int* out) {
   return;
 }
 
-// Function to select an index between [0,n-1] with specified and unequal probabilities.
+/* Function to select an index between [0,n-1] with specified and unequal
+ * probabilities.*/
 unsigned int rselect(double* prob, unsigned int n) {
   unsigned int i;
   double rnb, acc = 0.0;
@@ -537,29 +567,34 @@ unsigned int rselect(double* prob, unsigned int n) {
   if(i < n)
     return i;
   else {
-    warning("Something wrong in rselect(): some regime transition probabilities may not sum precisely to 1.");
+    warning("Some regime transition probabilities may not sum to 1.");
     return(n - 1);
   }
 }
 
-// Function to evolve a qualitative character along a rooted phylogenetic tree.
-// That function uses the dgraph framework and its is the user's responsability to make sure that the directed graph pointed by dgr is indeed a tree.
-// The function will otherwise fail to work correctly.
-void evolveqcalongtree(dgraph* dgr, double* tw, unsigned int ntw, unsigned int sr, unsigned int nnv) {
+/* Function to evolve a qualitative character along a rooted phylogenetic tree.
+ * That function uses the dgraph framework and its is the user's responsability
+ * to make sure that the directed graph pointed by dgr is indeed a tree.
+ * The function will otherwise fail to work correctly.*/
+void evolveqcalongtree(dgraph* dgr, double* tw, unsigned int ntw,
+                       unsigned int sr, unsigned int nnv) {
   unsigned int i, j;
   if(dgr->dn[sr].nd) {
     for(i = 0; i < dgr->dn[sr].nd; i++) {
       for(j = 0; j < nnv; j++)
-	dgr->dn[sr].d[i]->d->v[j] = (double)(rselect(&tw[((unsigned int)(dgr->dn[sr].v[j]))*ntw],ntw));
+        dgr->dn[sr].d[i]->d->v[j] =
+          (double)(rselect(&tw[((unsigned int)(dgr->dn[sr].v[j]))*ntw],ntw));
       evolveqcalongtree(dgr,tw,ntw,dgr->dn[sr].d[i]->d->id,nnv);
     }
   }
   return;
 }
 
-// Calculate the edge coefficients of the simulation of character evolution according to the Ornstein-Uhlenbeck process.
-// The type double array pointed by ev must be pre-allocated to size 3*ne.
-void OUdedgecoefs(double* ev, double* lg, unsigned int ne, double alpha, double sigma) {
+/* Calculate the edge coefficients of the simulation of character evolution
+ * according to the Ornstein-Uhlenbeck process.
+ * The type double array pointed by ev must be pre-allocated to size 3*ne.*/
+void OUdedgecoefs(double* ev, double* lg, unsigned int ne, double alpha,
+                  double sigma) {
   unsigned int i, idx;
   if(alpha != 0.0) {
     for(i = 0, idx = 0; i < ne; i++) {
@@ -594,7 +629,7 @@ void simOUprocess(dgraph* dgr, unsigned int sr, unsigned int n, double* out) {
   return;
 }
 
-void PEMvar(double* d, int* nd, double* a, double* psi, double* res) {
+void PEMvarC(double* d, int* nd, double* a, double* psi, double* res) {
   int i;
   for(i = 0; i < *nd ; i++) {
     if(d[i]!=0.0)
@@ -605,7 +640,7 @@ void PEMvar(double* d, int* nd, double* a, double* psi, double* res) {
   return;
 }
 
-void PEMweight(double* d, int* nd, double* a, double* psi, double* res) {
+void PEMweightC(double* d, int* nd, double* a, double* psi, double* res) {
   int i;
   for(i = 0; i < *nd ; i++) {
     if(d[i]!=0.0)
@@ -617,7 +652,7 @@ void PEMweight(double* d, int* nd, double* a, double* psi, double* res) {
 }
 
 // Calculate the coefficient of prediction (P-squared).
-void Psquared(double* p, double* o, int* n, double* res) {
+void PsquaredC(double* p, double* o, int* n, double* res) {
   int i;
   double mo, s2y, mspe, acc;
   // Calculates mean observed values.
@@ -644,13 +679,16 @@ void Psquared(double* p, double* o, int* n, double* res) {
 }
 
 #ifdef with_testing
-// Printing functions to diagnose whether the directed edges and vertices are correctly described.
-// Print directed edges and the vertices they point at down- and upward.
+/* Printing functions to diagnose whether the directed edges and vertices are
+ * correctly described.
+ * Print directed edges and the vertices; they point at down- and upward.*/
 void checkdedge(dedge* de, unsigned int ne) {
   unsigned int i;
-  printf("Checking %d edge(s) of size %d starting at address %p\n",(unsigned int)ne,(unsigned int)sizeof(dedge),de);
+  printf("Checking %d edge(s) of size %d starting at address %p\n",
+         (unsigned int)ne,(unsigned int)sizeof(dedge),de);
   for(i = 0; i < ne; i++)
-    printf("E%d downward N%d and upward N%d\n",de[i].id,de[i].u->id+1,de[i].d->id+1);
+    printf("E%d downward N%d and upward N%d\n",de[i].id,de[i].u->id+1,
+           de[i].d->id+1);
   return;
 }
 
@@ -668,14 +706,17 @@ void checkdedgevalues(dedge* de, unsigned int ne) {
   return;
 }
 
-// Print directed vertices pointing through which edge to which vertices up- and downward.
+/* Print directed vertices pointing through which edge to which vertices up-
+ * and downward.*/
 void checkdvertex(dvertex* dn, unsigned int nn) {
   unsigned int i, j;
-  printf("Checking %d vertex(s) of size %d starting at address %p\n",(unsigned int)nn,(unsigned int)sizeof(dvertex),dn);
+  printf("Checking %d vertex(s) of size %d starting at address %p\n",
+         (unsigned int)nn,(unsigned int)sizeof(dvertex),dn);
   for(i = 0; i < nn; i++) {
     if(dn[i].nu > 0) {
       for(j = 0; j < dn[i].nu; j++)
-	printf("N%d <- E%d <- N%d\n",dn[i].id+1,dn[i].u[j]->id+1,dn[i].u[j]->u->id+1);
+        printf("N%d <- E%d <- N%d\n",dn[i].id+1,dn[i].u[j]->id+1,
+               dn[i].u[j]->u->id+1);
     }
     else
       printf("N%d is not upward-connected\n",dn[i].id+1);
@@ -721,7 +762,8 @@ void checkdgraphvalues(dgraph* dgr) {
 
 void checkmatrix(matrix* mat) {
   unsigned int i, j, offset;
-  printf("Checking %d x %d matrix %s stored at address %p:\n",mat->nr,mat->nc,mat->id,mat);
+  printf("Checking %d x %d matrix %s stored at address %p:\n",mat->nr,mat->nc,
+         mat->id,mat);
   if(mat->nr && mat->nc) {
     printf("Data pointer: %p\n",mat->v);
     for(i = 0; i < mat->nr; i++) {
@@ -735,7 +777,8 @@ void checkmatrix(matrix* mat) {
   return;
 }
 /*
-void test_function(double *mat1, double *mat2, double *res, int *rmat1, int *cmat2, int *p) {
+void test_function(double *mat1, double *mat2, double *res, int *rmat1,
+                   int *cmat2, int *p) {
   matrix a, b, c;
   a = assignmatrix("A",(unsigned int)(*rmat1),(unsigned int)(*p),mat1);
   b = assignmatrix("B",(unsigned int)(*p),(unsigned int)(*cmat2),mat2);
@@ -747,7 +790,8 @@ void test_function(double *mat1, double *mat2, double *res, int *rmat1, int *cma
   return;
 }
 
-void test_function2(double *mat1, double *mat2, double *res, int *rmat1, int *rmat2, int *cols) {
+void test_function2(double *mat1, double *mat2, double *res, int *rmat1,
+                    int *rmat2, int *cols) {
   matrix a, b, c;
   a = assignmatrix("A",(unsigned int)(*rmat1),(unsigned int)(*cols),mat1);
   b = assignmatrix("B",(unsigned int)(*rmat2),(unsigned int)(*cols),mat2);
@@ -759,7 +803,8 @@ void test_function2(double *mat1, double *mat2, double *res, int *rmat1, int *rm
   return;
 }
 
-void test_function3(double *mat1, double *d, double *mat2, double *res, int *rmat1, int *rmat2, int *cols) {
+void test_function3(double *mat1, double *d, double *mat2, double *res,
+                    int *rmat1, int *rmat2, int *cols) {
   matrix a, b, c;
   a = assignmatrix("A",(unsigned int)(*rmat1),(unsigned int)(*cols),mat1);
   b = assignmatrix("B",(unsigned int)(*rmat2),(unsigned int)(*cols),mat2);
@@ -773,7 +818,8 @@ void test_function3(double *mat1, double *d, double *mat2, double *res, int *rma
 
 void test_function4(double *mat1, int* dimmat1, double *m) {
   matrix a;
-  a = assignmatrix("A",(unsigned int)(dimmat1[0]),(unsigned int)(dimmat1[1]),mat1);
+  a = assignmatrix("A",(unsigned int)(dimmat1[0]),(unsigned int)(dimmat1[1]),
+                   mat1);
   checkmatrix(&a);
   rowcentermeans(&a,&a,m);
   return;
@@ -781,13 +827,15 @@ void test_function4(double *mat1, int* dimmat1, double *m) {
 
 void test_function5(double *mat1, int* dimmat1, double *m) {
   matrix a;
-  a = assignmatrix("A",(unsigned int)(dimmat1[0]),(unsigned int)(dimmat1[1]),mat1);
+  a = assignmatrix("A",(unsigned int)(dimmat1[0]),(unsigned int)(dimmat1[1]),
+                   mat1);
   checkmatrix(&a);
   colcentermeans(&a,&a,m);
   return;
 }
 
-void test_function6(double *mat1, double *d, double *mat2, double *res, int *rmat1, int *cmat2, int *crmats) {
+void test_function6(double *mat1, double *d, double *mat2, double *res,
+                    int *rmat1, int *cmat2, int *crmats) {
   matrix a, b, c;
   a = assignmatrix("A",(unsigned int)(*rmat1),(unsigned int)(*crmats),mat1);
   b = assignmatrix("B",(unsigned int)(*crmats),(unsigned int)(*cmat2),mat2);
@@ -815,7 +863,8 @@ void PEMInfMat(int* from, int* to, int* ne, int* nn, int* out) {
 }
 
 // Evolve a qualititave character along a phylogenetic tree.
-void EvolveQC(int* from, int* to, int* ne, int* nn, double* nv, double* tw, int* ntw, int* anc, int* n, int* sr) {
+void EvolveQC(int* from, int* to, int* ne, int* nn, double* nv, double* tw,
+              int* ntw, int* anc, int* n, int* sr) {
   dgraph* dgr;
   unsigned int i, sri, anci;
   dgr = (dgraph*)Calloc(1,dgraph);
@@ -834,7 +883,8 @@ void EvolveQC(int* from, int* to, int* ne, int* nn, double* nv, double* tw, int*
   return;
 }
 
-void OUsim(int* from, int* to, int* ne, int* nn, double* lg, double* alpha, double* sigma, double* opt, int* n, int* sr, double* out) {
+void OUsim(int* from, int* to, int* ne, int* nn, double* lg, double* alpha,
+           double* sigma, double* opt, int* n, int* sr, double* out) {
   dgraph* dgr;
   unsigned int i, idx, sri;
   double* ev;
@@ -854,26 +904,29 @@ void OUsim(int* from, int* to, int* ne, int* nn, double* lg, double* alpha, doub
   return;
 }
 
-void PEMbuildC(int* ne, int* nsp, double* Bc, double* m, double* d, double* a, double* psi, double* w, double* BcW) {
+void PEMbuildC(int* ne, int* nsp, double* Bc, double* m, double* d, double* a,
+               double* psi, double* w, double* BcW) {
   matrix BcMat, BcWMat;
   BcMat = assignmatrix("Bc",(unsigned int)(*nsp),(unsigned int)(*ne),Bc);
   colcentermeans(&BcMat,&BcMat,m);
   BcWMat = assignmatrix("BcW",(unsigned int)(*nsp),(unsigned int)(*ne),BcW);
-  PEMweight(d,ne,a,psi,w);
+  PEMweightC(d,ne,a,psi,w);
   colweighting(&BcMat,&BcWMat,w);
   return;
 }
 
-void PEMupdateC(int* ne, int* nsp, double* Bc, double* d, double* a, double* psi, double* w, double* BcW) {
+void PEMupdateC(int* ne, int* nsp, double* Bc, double* d, double* a,
+                double* psi, double* w, double* BcW) {
   matrix BcMat, BcWMat;
   BcMat = assignmatrix("Bc",(unsigned int)(*nsp),(unsigned int)(*ne),Bc);
   BcWMat = assignmatrix("BcW",(unsigned int)(*nsp),(unsigned int)(*ne),BcW);
-  PEMweight(d,ne,a,psi,w);
+  PEMweightC(d,ne,a,psi,w);
   colweighting(&BcMat,&BcWMat,w);
   return;
 }
 
-void PEMLoc2Scores(int* ne, double* mw, int* ntgt, double* loc, double* a, double* psi, int* nd, double* d, double* vt, double* sc) {
+void PEMLoc2Scores(int* ne, double* mw, int* ntgt, double* loc, double* a,
+                   double* psi, int* nd, double* d, double* vt, double* sc) {
   matrix locMat, vtMat, scMat;
   int i, j, offset;
   locMat = assignmatrix("loc",(unsigned int)(*ntgt),(unsigned int)(*ne),loc);
@@ -886,12 +939,14 @@ void PEMLoc2Scores(int* ne, double* mw, int* ntgt, double* loc, double* a, doubl
 	loc[offset+i]=(psi[j])*R_pow(loc[offset+i],0.5*(1.0-(a[j])));
       else 
 	loc[offset+i]=0;
-  // Step2: centering with the original mean weights (ie. mean columns of B times edge weights)
+  /* Step2: centering with the original mean weights (ie. mean columns of B
+   * times edge weights)*/
   colcentering(&locMat,&locMat,mw);
   // Step3: Inversion of the singluar values.
   for(i = 0; i < *nd; i++)
     d[i] = 1.0 / d[i];
-  // Step4: Transpose of [D[SIGMA]^(-1) times VT] Like VD[SIGMA]^(-1) since vt is the transpose of V
+  /* Step4: Transpose of [D[SIGMA]^(-1) times VT] Like VD[SIGMA]^(-1) since vt
+   * is the transpose of V*/
   rowweighting(&vtMat,&vtMat,d);
   // Step5: Perform SC = LOC times transposed [D[SIGMA]^(-1) times VT]
   matrixproducttrans(&locMat,&vtMat,&scMat);
