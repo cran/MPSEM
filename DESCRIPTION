@@ -1,20 +1,37 @@
 Package: MPSEM
 Type: Package
-Version: 0.4-1
-Date: 2022-01-10
 Encoding: UTF-8
-Title: Modeling Phylogenetic Signals using Eigenvector Maps
-Author: Guillaume Guenard, with contribution from Pierre Legendre
-Maintainer: Guillaume Guenard <guillaume.guenard@gmail.com>
-Description: Computational tools to represent phylogenetic signals using adapted eigenvector maps.
+Title: Modelling Phylogenetic Signals using Eigenvector Maps
+Version: 0.4-4
+Date: 2024-09-04
+Authors@R: c(
+    person(
+      given = "Guillaume",
+      family = "Guénard",
+      role = c("aut","cre"),
+      email = "guillaume.guenard@umontreal.ca",
+      comment = c(ORCID = "0000-0003-0761-3072")),
+    person(
+      given = "Pierre",
+      family = "Legendre",
+      role = "ctb",
+      email = "pierre.legendre@umontreal.ca",
+      comment = c(ORCID = "0000-0002-3838-3305")
+    )
+  )
+Description: Computational tools to represent phylogenetic signals using adapted
+  eigenvector maps.
 Depends: R (>= 3.0.0), ape
-Suggests: knitr, caper, xtable
+Suggests: knitr, caper, xfun
 Imports: MASS
 License: GPL-3
 LazyLoad: yes
 NeedsCompilation: yes
 VignetteBuilder: knitr
 Repository: CRAN
-RoxygenNote: 7.1.2
-Packaged: 2022-01-13 19:10:04 UTC; guenardg
-Date/Publication: 2022-01-13 20:52:47 UTC
+RoxygenNote: 7.3.1
+Packaged: 2024-09-04 17:02:04 UTC; guenardg
+Author: Guillaume Guénard [aut, cre] (<https://orcid.org/0000-0003-0761-3072>),
+  Pierre Legendre [ctb] (<https://orcid.org/0000-0002-3838-3305>)
+Maintainer: Guillaume Guénard <guillaume.guenard@umontreal.ca>
+Date/Publication: 2024-09-04 22:40:02 UTC

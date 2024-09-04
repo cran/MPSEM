@@ -26,28 +26,28 @@
 ##
 ## **************************************************************************
 ##
-#' Graph Manipulation Functions
+#' MPSEM graph Manipulation Functions
 #' 
 #' @description A set of primitive functions for creating and munipulating
-#' graphs.
+#' MPSEM graphs.
 #' 
 #' @name graph-functions
 #' 
 #' @param x A \code{graph-class} object.
-#' @param n The number of vertex to populate a new graph (\code{pop.graph}) or
+#' @param n The number of vertices to populate a new graph (\code{pop.graph}) or
 #' to add to an existing graph (\code{add.vertex}).
 #' @param vertex A list of vertex properties.
 #' @param edge A list of edge properties.
 #' @param label Labels to be given to edges or vertices.
-#' @param from The origins of the edge to be added (vertex labels or indices).
-#' @param to The destinations of the edge to be added (vertex labels or
+#' @param from The origins of the edges to be added (vertex labels or indices).
+#' @param to The destinations of the edges to be added (vertex labels or
 #' indices).
 #' @param id Indentity (label or index) of vertex or edge to be removed.
 #' @param tp Phylogenetic tree object of class \sQuote{phylo}, as defined in
-#' \code{\link{ape-package}}.
+#' \code{\link[ape]{ape-package}}.
 #' 
 #' @details A new graph can be populated with \code{n} vertices using function
-#' \code{pop.graph} and vertices can be added later with function
+#' \code{pop.graph}. Additional vertices can be added later with function
 #' \code{add.vertex}. The graphs so created contain no edges; the latter are
 #' added using function \code{add.edge}. Vertices and edges are removed using
 #' functions \code{rm.vertex} and \code{rm.edge}, respectively.
@@ -56,32 +56,33 @@
 #' reestablishing the connections between the vertices located above and below
 #' that vertex using a new set of edges.
 #' 
-#' Function \code{Phylo2DirectedGraph} uses the graph functions to convert a
-#' rooted phylogenetic tree of class \sQuote{phylo} (see
-#' \code{\link{ape-package}}) to a \code{\link{graph-class}} object. It recycles
-#' tip labels and creates default node labels, if they were absent from the
-#' \sQuote{phylo} object, and uses them as vertex labels. The resulting acyclic
-#' graph can then be edited to represent cases that do not have a tree topology.
+#' Function \code{Phylo2DirectedGraph} uses the MPSEM graph functions to convert
+#' a rooted phylogenetic tree of class \sQuote{phylo} (see
+#' \code{\link[ape]{ape-package}}) to a \code{\link{graph-class}} object. It
+#' recycles tip labels. It also creates default node labels if they were absent
+#' from the \sQuote{phylo} object, and uses them as vertex labels. The resulting
+#' acyclic graph can then be edited to represent cases that do not have a tree
+#' topology.
 #' 
-#' @returns A \code{\link{graph-class}} object. Objects returned by
-#' \code{\link{Phylo2DirectedGraph}} have a \code{\link{numeric}} edge property
-#' called \sQuote{distance} featuring branch lengths and a \code{link{logical}}
-#' vertex property called \sQuote{species} specifying whether a vertex is a tree
-#' tip or an internal node.
+#' @returns The function returns a \code{\link{graph-class}} object. Objects
+#' returned by \code{\link{Phylo2DirectedGraph}} have a \code{\link{numeric}}
+#' edge property called \sQuote{distance} featuring branch lengths, and a
+#' \code{link{logical}} vertex property called \sQuote{species} specifying
+#' whether a vertex is a tree tip or an internal node.
 #' 
 #' @author \packageAuthor{MPSEM}
 #' Maintainer: \packageMaintainer{MPSEM}
 #' 
 #' @references
 #' Guénard, G., Legendre, P., and Peres-Neto, P. 2013. Phylogenetic eigenvector
-#' maps (PEM): a framework to model and predict species traits. Meth. Ecol.
-#' Evol. 4: 1120--1131
+#' maps: a framework to model and predict species traits. Methods in Ecology 
+#' and Evolution 4: 1120-1131
 #' 
 #' Makarenkov, V., Legendre, L. & Desdevise, Y. 2004. Modelling phylogenetic
-#' relationships using reticulated networks. Zool. Scr. 33: 89--96
+#' relationships using reticulated networks. Zoologica Scripta 33: 89-96
 #' 
 #' Blanchet, F. G., Legendre, P. & Borcard, D. 2008. Modelling directional
-#' spatial processes in ecological data. Ecol. Model. 215: 325--336
+#' spatial processes in ecological data. Ecological Modelling 215: 325-336
 #' 
 #' @seealso \code{\link{graph-class}}.
 #' 
@@ -144,7 +145,9 @@ NULL
 #' 
 #' @describeIn graph-functions
 #' 
-#' Creates a graph and populates it with vertices.
+#' Create Graph
+#' 
+#' Create a graph and populates it with vertices.
 #' 
 #' @export
 pop.graph <- function(n, vertex=list(), label=NULL) {
@@ -175,11 +178,13 @@ pop.graph <- function(n, vertex=list(), label=NULL) {
 #' 
 #' @describeIn graph-functions
 #' 
-#' Adds vertices to an existing graph.
+#' Add Vertices
+#' 
+#' Add vertices to an existing graph.
 #' 
 #' @export
 add.vertex <- function(x,n,vertex=list(),label=NULL) {
-  if(class(x) != "graph")
+  if(!inherits(x, "graph"))
     stop("Parameter x must be of class graph.")
   if(!is.list(vertex))
     stop("Values for vertices must be provided as a list.")
@@ -211,11 +216,13 @@ add.vertex <- function(x,n,vertex=list(),label=NULL) {
 #' 
 #' @describeIn graph-functions
 #' 
-#' Adds edges to a graph.
+#' Add Edges
+#' 
+#' Add edges to a graph.
 #' 
 #' @export
 add.edge <- function(x,from,to,edge=list(),label=NULL) {
-  if(class(x) != "graph")
+  if(!inherits(x, "graph"))
     stop("Parameter x must be of class graph.")
   if(length(from) != length(to))
     stop("Number of origins(",length(from),") mismatch that of destinations (",
@@ -279,11 +286,13 @@ add.edge <- function(x,from,to,edge=list(),label=NULL) {
 #' 
 #' @describeIn graph-functions
 #' 
-#' Removes edges from a graph.
+#' Remove Edges
+#' 
+#' Remove edges from a graph.
 #' 
 #' @export
 rm.edge <- function(x,id) {
-  if(class(x) != "graph")
+  if(!inherits(x, "graph"))
     stop("Parameter x must be of class graph.")
   if(is.character(id)) {
     safe <- id
@@ -304,11 +313,13 @@ rm.edge <- function(x,id) {
 #' 
 #' @describeIn graph-functions
 #' 
-#' Removes vertices from a graph.
+#' Remove Vertices
+#' 
+#' Remove vertices from a graph.
 #' 
 #' @export
 rm.vertex <- function(x,id) {
-  if(class(x) != "graph")
+  if(!inherits(x, "graph"))
     stop("Parameter x must be of class graph.")
   if(is.character(id)) {
     safe <- id
@@ -335,11 +346,14 @@ rm.vertex <- function(x,id) {
 #' 
 #' @describeIn graph-functions
 #' 
-#' Removes vertices from a graph while also removing their associated edges.
+#' Collapse Vertices
+#' 
+#' Remove vertices from a graph: remove vertices together with their associated
+#' edges.
 #' 
 #' @export
 collapse.vertex <- function(x,id) {
-  if(class(x) != "graph")
+  if(!inherits(x, "graph"))
     stop("Parameter x must be of class graph.")
   if(is.character(id)) {
     safe <- id
@@ -394,7 +408,10 @@ collapse.vertex <- function(x,id) {
 #' 
 #' @describeIn graph-functions
 #' 
-#' Transforms a phylogenetic tree into a directed graph.
+#' Phylogenetic Tree Conversion
+#' 
+#' Create a new \code{\link{graph-class}} object from a phylo-class object
+#' (phylogenetic tree).
 #' 
 #' @export
 Phylo2DirectedGraph <- function(tp) {

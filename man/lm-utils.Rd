@@ -2,6 +2,7 @@
 % Please edit documentation in R/lm-utils.R
 \name{lm-utils}
 \alias{lm-utils}
+\alias{utils}
 \alias{lmforwardsequentialAICc}
 \alias{lmforwardsequentialsidak}
 \title{Linear Modelling Utility Functions}
@@ -13,11 +14,13 @@ lmforwardsequentialsidak(y, x, object, alpha = 0.05)
 \arguments{
 \item{y}{A response variable.}
 
-\item{x}{Descriptors to be used as auxiliary traits.}
+\item{x}{Descriptors (numeric of \code{\link{factor}}) to be used as
+auxiliary traits.}
 
 \item{object}{A \code{\link{PEM-class}} object.}
 
-\item{alpha}{The threshold above which to stop adding variables.}
+\item{alpha}{The p-value threshold above which the function will stop adding
+variables.}
 }
 \value{
 An \code{\link{lm}-class} object.
@@ -29,36 +32,41 @@ Eigenvector Maps among their explanatory variables.
 \details{
 Function \code{\link{lmforwardsequentialsidak}}, performs a forward
 stepwise selection of the PEM eigenvectors until the familywise test of
-significance of the new variable to be included exceeds the
+significance of the new variable to be included exceeds the p-value 
 threshold \code{alpha}. The familiwise type I error probability is obtained
 using the Holm-Sidak correction of the testwise probabilities, thereby
 correcting for type I error rate inflation due to multiple testing.
-\code{lmforwardsequentialAICc} carries out forward stepwise selection of the
-eigenvectors as long as the candidate model features a lower
-sample-size-corrected Akaike information criterion than the previous model.
-The final model should be regarded as overfit from the Neyman-Pearson
-(\emph{i.e.} frequentist) point of view, but it is the model that minimizes
-information loss from the standpoint of information theory.
+
+Function \code{lmforwardsequentialAICc} carries out forward stepwise
+selection of the eigenvectors as long as the candidate model features a 
+sample-size-corrected Akaike information criterion lower than the previous
+model. The final model should be regarded as overfitted from the
+Neyman-Pearson (\emph{i.e.} frequentist) point of view, but this is the model
+that minimizes information loss from the standpoint of information theory.
 }
 \section{Functions}{
 \itemize{
-\item \code{lmforwardsequentialAICc}: Forward stepwise variable addition using the sample-size-corrected Akaike
+\item \code{lmforwardsequentialAICc()}: Forward Stepwise Regression AICc
+
+Forward stepwise variable addition using the sample-size-corrected Akaike
 Information Criterion.
 
-\item \code{lmforwardsequentialsidak}: Forward stepwise variable addition using a Sidak multiple testing
-corrected alpha error threshold as the stopping criterion.
-}}
+\item \code{lmforwardsequentialsidak()}: Forward Stepwise Regression Sidak
 
+Forward stepwise variable addition using a Sidak multiple testing
+corrected alpha error threshold as the stopping criterion.
+
+}}
 \references{
 Burnham, K. P. & Anderson, D. R. 2002. Model selection and multimodel
 inference: a practical information-theoretic approach, 2nd ed.
 Springer-Verlag. xxvi + 488 pp.
 
 Holm, S. 1979. A simple sequentially rejective multiple test procedure.
-Scand. J. Statist. 6: 65-70.
+Scand. J. Statist. 6: 65-70
 
 Sidak, Z. 1967. Rectangular confidence regions for means of multivariate
-normal distributions. J. Am. Stat. Ass. 62, 626-633.
+normal distributions. J. Am. Stat. Ass. 62, 626-633
 }
 \author{
 \packageAuthor{MPSEM}
