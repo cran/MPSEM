@@ -1,10 +1,10 @@
 /*************************************************************************
  
- (c) 2010-2022 Guillaume Guénard
+ (c) 2010-2024 Guillaume Guénard
  Université de Montréal, Montreal, Quebec, Canada
  
- **handles directed graphs in the context of modelling processes modulating**
- **trait evolution along phylogeny.**
+ ** handles directed graphs in the context of modelling processes modulating **
+ ** trait evolution along phylogeny. **
  
  This file is part of MPSEM
  
@@ -26,9 +26,133 @@
  *************************************************************************/
 
 // Includes
-#include<R.h>
-#include<Rmath.h>
 #include"MPSEM.h"
+
+// Internal distance vector indexing.
+void dstIdxC(int *n, int* na, int* nb, int* nn, int* a, int* b, int* idx) {
+  
+  int i, ii, j, jj, k;
+  
+  for(i = 0, j = 0, k = 0; k < *nn; i++, j++, k++) {
+    if(i == *na) i = 0;
+    if(j == *nb) j = 0;
+    ii = a[i];
+    jj = b[j];
+    if(jj > ii)
+      idx[k] = jj + (ii - 1)*(*n) - ii*(ii + 1)/2;
+    else if(jj < ii)
+      idx[k] = ii + (jj - 1)*(*n) - jj*(jj + 1)/2;
+    else
+      idx[k] = NA_INTEGER;
+  }
+  
+  return;
+}
+
+// Influence matrix calculation.
+
+// Internal function determining whether all vertices have been processed.
+bool all_proc(bool* ipr, int nv) {
+  
+  bool out = true;
+  int i;
+  
+  for(i = 0; i < nv; i++)
+    if(!ipr[i]) {
+      out = false;
+      break;
+    }
+  
+  return(out);
+}
+
+// Internal function that check whether all prior vertices have been processed.
+bool can_proc(int* fr, int* to, bool* ipr, int ne, int v) {
+  
+  int i;
+  bool out;
+  
+  for(i = 0, out = true; i < ne; i++)
+    if(to[i] == v)
+      if(!ipr[fr[i]]) {
+        out = false;
+        break;
+      }
+  
+  return(out);
+}
+
+// Calculate the influence matrix.
+void InflMatC(int* ne, int* nv, int* from, int* to, int* B) {
+  
+  int i, j, k, os1, os2, pass;
+  
+  for(i = 0; i < *ne; i++) {
+    from[i]--;
+    to[i]--;
+  }
+  
+  /* Verify that the vertex indices in 'from' and 'to' are not higher than the
+   * number of vertices declared as 'nv'. */
+  for(i = 0, k = 0; i < *ne; i++) {
+    j = from[i];
+    if(j > k) k = j;
+    j = to[i];
+    if(j > k) k = j;
+  }
+  
+  if(!(k < *nv)) {
+    REprintf("Error (InflMat.c): Vertex indices in 'from' and 'to' > 'nv'.");
+    return;
+  }
+  
+  // Allocate memory for the is-processed vector.
+  bool* is_proc = (bool*)R_Calloc(*nv,bool);
+  
+  // Initialize the is-processed vector with all true.
+  for(i = 0; i < *nv; i++)
+    is_proc[i] = true;
+  
+  /* Assign false to is-processed of any vertex that is an edge destination.
+   This effectively makes any root true; roots need no processing here. */
+  for(i = 0; i < *ne; i++)
+    is_proc[to[i]] = false;
+  
+  if(all_proc(is_proc,*nv))
+    REprintf("Error (InflMat.c): The graph has no root.");
+  
+  pass = 0;
+  
+  while(!all_proc(is_proc,*nv)) {
+    for(i = 0; i < *nv; i++)
+      if(!is_proc[i]) {   // Is the vertex unprocessed?
+        
+        /* Can the vector be processed. In other word, have all prior vertices
+         * of i already been processed? */
+        if(can_proc(from,to,is_proc,*ne,i)) {
+          
+          for(j = 0; j < *ne; j++)
+            if(to[j] == i) {
+              for(k = 0, os1 = i, os2 = from[j]; k < *ne;
+              k++, os1 += *nv, os2 += *nv)
+                B[os1] |= B[os2];
+              B[i + *nv * j] = true;
+            }
+          
+          is_proc[i] = true;
+        }
+      }
+    
+    pass++;
+    R_CheckUserInterrupt();
+  }
+  
+  // Free memory
+  R_Free(is_proc);
+  
+  return;
+}
+
 
 // C Structure-based graph representation scheme.
 
@@ -541,16 +665,6 @@ void getcolumn(matrix *mat, unsigned int j, double *a) {
   return;
 }
 
-// Function to calculate the graph's influence matrix.
-void InfluenceRD(dgraph* dgr, unsigned int e, int* out) {
-  unsigned int i;
-  out[dgr->de[e].d->id] = 1;
-  if(dgr->de[e].d->nd)
-    for(i = 0; i < dgr->de[e].d->nd; i++)
-      InfluenceRD(dgr,dgr->de[e].d->d[i]->id,out);
-  return;
-}
-
 /* Function to select an index between [0,n-1] with specified and unequal
  * probabilities.*/
 unsigned int rselect(double* prob, unsigned int n) {
@@ -678,7 +792,7 @@ void PsquaredC(double* p, double* o, int* n, double* res) {
   return;
 }
 
-#ifdef with_testing
+#ifdef WITH_TESTING
 /* Printing functions to diagnose whether the directed edges and vertices are
  * correctly described.
  * Print directed edges and the vertices; they point at down- and upward.*/
@@ -850,20 +964,7 @@ void test_function6(double *mat1, double *d, double *mat2, double *res,
 
 #endif
 
-void PEMInfMat(int* from, int* to, int* ne, int* nn, int* out) {
-  dgraph* dgr;
-  unsigned int i, idx;
-  dgr = (dgraph*)R_Calloc(1,dgraph);
-  *dgr = initdgraph(NULL,*ne,NULL,*nn,NULL);
-  makedgraph(from,to,dgr);
-  for(i = 0, idx = 0; i < *ne; i++, idx += *nn)
-    InfluenceRD(dgr,i,&out[idx]);
-  freedgraph(dgr);
-  R_Free(dgr);
-  return;
-}
-
-// Evolve a qualititave character along a phylogenetic tree.
+// Evolve a qualitative character along a phylogenetic tree.
 void EvolveQC(int* from, int* to, int* ne, int* nn, double* nv, double* tw,
               int* ntw, int* anc, int* n, int* sr) {
   dgraph* dgr;

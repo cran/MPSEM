@@ -1,6 +1,6 @@
 /*************************************************************************
  
- (c) 2008-2020 Guillaume Guénard
+ (c) 2008-2024 Guillaume Guénard
  Université de Montréal, Montreal, Quebec, Canada
  
  **Registering routines and dynamic symbols**
@@ -30,10 +30,11 @@
 #include <R_ext/Rdynload.h>
 
 /* .C calls */
+extern void dstIdxC(int*, int*, int*, int*, int*, int*, int*);  // 7 args.
+extern void InflMatC(int*, int*, int*, int*, int*);  // 5 args.
 extern void PEMvarC(double*, int*, double*, double*, double*);  // 5 args.
 extern void PEMweightC(double*, int*, double*, double*, double*);  // 5 args.
 extern void PsquaredC(double*, double*, int*, double*) ;  // 4 args.
-extern void PEMInfMat(int*, int*, int*, int*, int*);  // 5 args.
 extern void EvolveQC(int*, int*, int*, int*, double*, double*, int*, int*, int*,
                      int*);  // 10 args.
 extern void OUsim(int*, int*, int*, int*, double*, double*, double*, double*,
@@ -46,10 +47,11 @@ extern void PEMLoc2Scores(int*, double*, int*, double*, double*, double*, int*,
                           double*, double*, double*);  // 10 args.
 
 static const R_CMethodDef CEntries[] = {
+  {"dstIdxC",       (DL_FUNC) &dstIdxC,        7},
+  {"InflMatC",      (DL_FUNC) &InflMatC,       5},
   {"PEMvarC",       (DL_FUNC) &PEMvarC,        5},
   {"PEMweightC",    (DL_FUNC) &PEMweightC,     5},
   {"PsquaredC",     (DL_FUNC) &PsquaredC,      4},
-  {"PEMInfMat",     (DL_FUNC) &PEMInfMat,      5},
   {"EvolveQC",      (DL_FUNC) &EvolveQC,      10},
   {"OUsim",         (DL_FUNC) &OUsim,         11},
   {"PEMbuildC",     (DL_FUNC) &PEMbuildC,      9},

@@ -699,7 +699,7 @@ latter or, in other words, when an edge is on the path leading from a tip to the
 root of the tree. The influence matrix is obtained as follows:
 
 ```{r influence_matrix}
-PEMInfluence(perissodactyla.pgraph) -> res
+InflMat(perissodactyla.pgraph) -> res
 res
 ```
 

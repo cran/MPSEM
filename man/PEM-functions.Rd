@@ -2,7 +2,7 @@
 % Please edit documentation in R/PEM-functions.R
 \name{PEM-functions}
 \alias{PEM-functions}
-\alias{PEMInfluence}
+\alias{InflMat}
 \alias{PEMweights}
 \alias{PEM.build}
 \alias{PEM.updater}
@@ -13,7 +13,7 @@
 \alias{Locations2PEMscores}
 \title{Phylogenetic Eigenvector Maps}
 \usage{
-PEMInfluence(x, mroot = TRUE)
+InflMat(x)
 
 PEMweights(d, a = 0, psi = 1)
 
@@ -59,9 +59,6 @@ Locations2PEMscores(object, gsc)
 \arguments{
 \item{x}{A \code{\link{graph-class}} object containing a phylogenetic graph.}
 
-\item{mroot}{Boolean (TRUE or FALSE) specifying whether multiple roots are
-allowed.}
-
 \item{d}{The name of the member of \code{x$edge} where the phylogenetic
 distances (edge lengths) can be found.}
 
@@ -103,9 +100,9 @@ containing all species (model and target) used in the study.}
 \item{gsc}{The output of \code{getGraphLocations}.}
 }
 \value{
-Function \code{\link{PEMInfluence}} returns the influence matrix of
-graph \code{x} and function \code{\link{PEMweights}} returns weights
-corresponding to the distances. Functions \code{\link{PEM.build}},
+Function \code{\link{InflMat}} returns the influence matrix of graph
+\code{x} and function \code{\link{PEMweights}} returns weights corresponding
+to the distances. Functions \code{\link{PEM.build}},
 \code{\link{PEM.fitSimple}} and \code{\link{PEM.forcedSimple}} return a
 \code{\link{PEM-class}} object. Function \code{\link{getGraphLocations}}
 returns a list whose first member is an influence coordinate matrix whose
@@ -125,18 +122,16 @@ phylogenetic graph. Each computation function is briefly described in
 section \code{Functions} below.
 }
 \details{
-Functions \code{\link{PEMInfluence}} and \code{\link{PEMweights}}
-are used internally by \code{\link{PEM.build}} to create a binary matrix
-referred to as an \sQuote{influence matrix} and weight its columns. That
-matrix has a row for each vertex (or node) of graph \sQuote{x} and a column
-for each of its edges. The elements of the influence matrix are 1 whenever
-the vertex associated with a row is located in the tree, either directly or
-indirectly downward the edge associated with a column. That function is
-implemented in \code{C} language using recursive function calls. Although
-\code{\link{PEMInfluence}} allows one to use multiple roots as its default
-argument, it is called within \code{PEM.build} with \code{mroot = FALSE}.
-User must therefore make sure that the graph provided to \code{PEMap} is
-single-rooted.
+Functions \code{\link{InflMat}} and \code{\link{PEMweights}} are
+used internally by \code{\link{PEM.build}} to create a binary matrix referred
+to as an \sQuote{influence matrix} and weight its columns. That matrix has a
+row for each vertex (or node) of graph \sQuote{x} and a column for each of
+its edges. The elements of the influence matrix are 1 whenever the vertex
+associated with a row is located in the tree, either directly or indirectly
+downward the edge associated with a column. That function is implemented in
+\code{C} language using recursive function calls. Although
+\code{\link{InflMat}} allows one to use multiple roots. User must therefore
+make sure that the graph provided to \code{PEMap} is single-rooted.
 
 Function \code{\link{PEM.build}} is used to produce a phylogenetic
 eigenvector map, while function \code{\link{PEM.updater}} allows one to
@@ -159,7 +154,7 @@ nodes of the phylogeny) in order to estimate ancestral trait values.
 }
 \section{Functions}{
 \itemize{
-\item \code{PEMInfluence()}: Influence Matrix
+\item \code{InflMat()}: Influence Matrix
 
 Calculates the influence matrix of a phylogenetic graph. The influence matrix
 is a binary matrix whose rows and columns correspond to the vertices and
@@ -229,8 +224,8 @@ x <- Phylo2DirectedGraph(t1)
 
 ## Calculate the (binary) influence matrix; E1 to E12 are the tree edges
 ## Edge E12 comes from the tree origin
-PEMInfluence(x)
-PEMInfluence(x)[x$vertex$species,]
+InflMat(x)
+InflMat(x)[x$vertex$species,]
 
 ## Building phylogenetic eigenvector maps
 PEM1 <- PEM.build(x)

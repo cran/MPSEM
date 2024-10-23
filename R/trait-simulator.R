@@ -1,11 +1,11 @@
 ## **************************************************************************
 ##
-##    (c) 2010-2022 Guillaume Guénard
+##    (c) 2010-2024 Guillaume Guénard
 ##        Department de sciences biologiques,
 ##        Université de Montréal
 ##        Montreal, QC, Canada
 ##
-##    **Trait value simulator**
+##    ** Trait value simulator **
 ##
 ##    This file is part of MPSEM
 ##
@@ -306,9 +306,9 @@ TraitVarGraphSim <- function(x, variance, distance="distance", p=1, ...) {
   if(is.null(x$edge[[distance]]))
     stop("There is no property '",distance,"' for the edges of the graph.")
   if(is.null(x$vertex$species)) {
-    B <- PEMInfluence(x,mroot = FALSE)
+    B <- InflMat(x)
   } else {
-    B <- PEMInfluence(x,mroot = FALSE)[x$vertex$species,]
+    B <- InflMat(x)[x$vertex$species,]
   }
   n <- nrow(B)
   if(!missing(variance)) {

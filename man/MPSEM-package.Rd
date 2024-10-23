@@ -39,7 +39,7 @@ Akaike Information Criterion (AIC), respectively.
 
 The package provides low-level utility functions for performing operations on
 graphs (see \link{graph-functions}), calculate influence matrix
-(\code{\link{PEMInfluence}}), and simulate trait values (see
+(\code{\link{InflMat}}), and simulate trait values (see
 \link{trait-simulator}).
 
 A phylogenetic modelling tutorial using \code{MPSEM} is available as a

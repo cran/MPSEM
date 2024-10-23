@@ -1,11 +1,11 @@
 ## **************************************************************************
 ##
-##    (c) 2010-2022 Guillaume Guénard
+##    (c) 2010-2024 Guillaume Guénard
 ##        Department de sciences biologiques,
 ##        Université de Montréal
 ##        Montreal, QC, Canada
 ##
-##    **Linear modelling utilisy functions**
+##    ** Linear modelling utilisy functions **
 ##
 ##    This file is part of MPSEM
 ##

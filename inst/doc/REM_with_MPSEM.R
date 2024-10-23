@@ -341,7 +341,7 @@ figCounter$register(
 figCounter$getCaption("crossPreds")
 
 ## ----influence_matrix---------------------------------------------------------
-PEMInfluence(perissodactyla.pgraph) -> res
+InflMat(perissodactyla.pgraph) -> res
 res
 
 ## ----PEM_updater--------------------------------------------------------------

@@ -1,11 +1,11 @@
 ## **************************************************************************
 ##
-##    (c) 2010-2022 Guillaume Guénard
+##    (c) 2010-2024 Guillaume Guénard
 ##        Department de sciences biologiques,
 ##        Université de Montréal
 ##        Montreal, QC, Canada
 ##
-##    **Class and method for Phylogenetic Eigenvector maps**
+##    ** Class and method for Phylogenetic Eigenvector maps **
 ##
 ##    This file is part of MPSEM
 ##

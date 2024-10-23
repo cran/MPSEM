@@ -1,11 +1,11 @@
 ## **************************************************************************
 ##
-##    (c) 2010-2022 Guillaume Guénard
+##    (c) 2010-2024 Guillaume Guénard
 ##        Department de sciences biologiques,
 ##        Université de Montréal
 ##        Montreal, QC, Canada
 ##
-##    **Phylogenetic Eigenvector Maps (PEM) functions**
+##    ** Phylogenetic Eigenvector Maps (PEM) functions **
 ##
 ##    This file is part of MPSEM
 ##
@@ -41,8 +41,6 @@
 #' Eigenvector Map.
 #' @param y One or many response variable(s) in the form of a single numeric 
 #' vector or a \code{\link{matrix}}, respectively.
-#' @param mroot Boolean (TRUE or FALSE) specifying whether multiple roots are
-#' allowed.
 #' @param d The name of the member of \code{x$edge} where the phylogenetic
 #' distances (edge lengths) can be found.
 #' @param a The steepness parameter describing whether changes occur, on
@@ -66,18 +64,16 @@
 #' \code{tpall}.
 #' @param gsc The output of \code{getGraphLocations}.
 #' 
-#' @details Functions \code{\link{PEMInfluence}} and \code{\link{PEMweights}}
-#' are used internally by \code{\link{PEM.build}} to create a binary matrix
-#' referred to as an \sQuote{influence matrix} and weight its columns. That
-#' matrix has a row for each vertex (or node) of graph \sQuote{x} and a column
-#' for each of its edges. The elements of the influence matrix are 1 whenever
-#' the vertex associated with a row is located in the tree, either directly or
-#' indirectly downward the edge associated with a column. That function is
-#' implemented in \code{C} language using recursive function calls. Although
-#' \code{\link{PEMInfluence}} allows one to use multiple roots as its default
-#' argument, it is called within \code{PEM.build} with \code{mroot = FALSE}.
-#' User must therefore make sure that the graph provided to \code{PEMap} is
-#' single-rooted.
+#' @details Functions \code{\link{InflMat}} and \code{\link{PEMweights}} are
+#' used internally by \code{\link{PEM.build}} to create a binary matrix referred
+#' to as an \sQuote{influence matrix} and weight its columns. That matrix has a
+#' row for each vertex (or node) of graph \sQuote{x} and a column for each of
+#' its edges. The elements of the influence matrix are 1 whenever the vertex
+#' associated with a row is located in the tree, either directly or indirectly
+#' downward the edge associated with a column. That function is implemented in
+#' \code{C} language using recursive function calls. Although
+#' \code{\link{InflMat}} allows one to use multiple roots. User must therefore
+#' make sure that the graph provided to \code{PEMap} is single-rooted.
 #' 
 #' Function \code{\link{PEM.build}} is used to produce a phylogenetic
 #' eigenvector map, while function \code{\link{PEM.updater}} allows one to
@@ -98,9 +94,9 @@
 #' \code{\link{getGraphLocations}}, but for the ancestral species (i.e. the
 #' nodes of the phylogeny) in order to estimate ancestral trait values.
 #' 
-#' @returns Function \code{\link{PEMInfluence}} returns the influence matrix of
-#' graph \code{x} and function \code{\link{PEMweights}} returns weights
-#' corresponding to the distances. Functions \code{\link{PEM.build}},
+#' @returns Function \code{\link{InflMat}} returns the influence matrix of graph
+#' \code{x} and function \code{\link{PEMweights}} returns weights corresponding
+#' to the distances. Functions \code{\link{PEM.build}},
 #' \code{\link{PEM.fitSimple}} and \code{\link{PEM.forcedSimple}} return a
 #' \code{\link{PEM-class}} object. Function \code{\link{getGraphLocations}}
 #' returns a list whose first member is an influence coordinate matrix whose
@@ -150,8 +146,8 @@
 #' 
 #' ## Calculate the (binary) influence matrix; E1 to E12 are the tree edges
 #' ## Edge E12 comes from the tree origin
-#' PEMInfluence(x)
-#' PEMInfluence(x)[x$vertex$species,]
+#' InflMat(x)
+#' InflMat(x)[x$vertex$species,]
 #' 
 #' ## Building phylogenetic eigenvector maps
 #' PEM1 <- PEM.build(x)
@@ -270,41 +266,23 @@ NULL
 #' (value = 0).
 #' 
 #' @export
-PEMInfluence <- function(x,mroot=TRUE) {
-  if(attr(x,"class") != "graph")
+InflMat <- function(x) {
+  if (attr(x, "class") != "graph") 
     stop("Parameter 'x' must be of class 'graph'")
-  from <- x$edge[[1L]] ; to <- x$edge[[2L]] ; ev <- attr(x,"ev")
-  roots <- (1L:ev[2L])[is.na(match(1L:ev[2L],to))] ; nroots <- length(roots)
-  ## If several roots, add a guide vertex and nroots edges connecting each root
-  ## from the guide.
-  if(nroots != 1L) {
-    if(!mroot)
-      stop("Multiple (",nroots,
-           ") roots are detected but multiple rooting is not allowed ",
-           "(i.e. mroot == FALSE).")
-    warning("Multiple (",nroots,") roots detected.")
-    from <- c(rep(1L,nroots),from+1L)
-    to <- c(roots,to)+1L
-    ev <- ev+c(nroots,1L)
-  }
-  B <- matrix(.C("PEMInfMat",
-                 as.integer(from),
-                 as.integer(to),
-                 as.integer(ev[1L]),
-                 as.integer(ev[2L]),
-                 B = integer(ev[2L]*ev[1L]))$B,ev[2L],ev[1L])
-  if(nroots != 1L)
-    B <- B[-1L,]    ## Strip the guidance vertex if many roots.
-  if(!is.null(attr(x,"vlabel")))
-    rownames(B) <- attr(x,"vlabel")
-  if(!is.null(attr(x,"elabel"))) {
-    if(nroots == 1L) {  ## Edge labels should be handled with 
-      colnames(B) <- attr(x,"elabel")
-    } else {
-      colnames(B) <- c(paste("V->",attr(x,"vlabel")[roots],sep=""),
-                       attr(x,"elabel"))
-    }
-  }
+  ev <- attr(x, "ev")
+  .C(
+    "InflMatC",
+    as.integer(ev[1L]),
+    as.integer(ev[2L]),
+    as.integer(x$edge[[1L]]),
+    as.integer(x$edge[[2L]]),
+    B = integer(ev[2L] * ev[1L])
+  )$B -> B
+  B <- matrix(B, nrow=ev[2L], ncol=ev[1L])
+  if (!is.null(attr(x, "vlabel"))) 
+    rownames(B) <- attr(x, "vlabel")
+  if (!is.null(attr(x, "elabel"))) 
+    colnames(B) <- attr(x, "elabel")
   return(B)
 }
 #' 
@@ -343,26 +321,36 @@ PEM.build <- function(x, d="distance", sp="species", a=0, psi=1,
   if(is.null(x$vertex[[sp]]))
     stop("There is no property '",sp,"' to indicate species vertices.")
   nsp <- sum(x$vertex[[sp]])
-  ### All graphs sould be single-rooted
+  ### All graphs should be single-rooted
   ev <- as.integer(attr(x, "ev"))  # Just to be sure.
   a <- rep(a,length.out=ev[1L])
   psi <- rep(psi,length.out=ev[1L])
-  out <- list(x=x,sp=x$vertex[[sp]])
-  out[["B"]] <-
-    matrix(.C("PEMInfMat",
-              as.integer(x$edge[[1L]]),
-              as.integer(x$edge[[2L]]),
-              ev[1L],ev[2L],
-              B = integer(ev[2L]*ev[1L]))$B,ev[2L],ev[1L])[x$vertex[[sp]],]
-  out <- c(out,.C("PEMbuildC",
-                  ne=ev[1L],nsp=nsp,
-                  Bc=as.double(out$B),
-                  means=double(ev[1L]),
-                  dist=as.double(x$edge[[d]]),
-                  a=as.double(a),
-                  psi=as.double(psi),
-                  w=double(ev[1L]),
-                  BcW=double(nsp*ev[1L])))
+  out <- list(x=x, sp=x$vertex[[sp]])
+  matrix(
+    .C("InflMatC",
+       ev[1L],
+       ev[2L],
+       as.integer(x$edge[[1L]]),
+       as.integer(x$edge[[2L]]),
+       B = integer(ev[2L]*ev[1L])
+      )$B,
+    nrow = ev[2L],
+    ncol = ev[1L]
+  )[x$vertex[[sp]],] -> out[["B"]]
+  c(
+    out,
+    .C("PEMbuildC",
+       ne = ev[1L],
+       nsp = nsp,
+       Bc = as.double(out$B),
+       means = double(ev[1L]),
+       dist = as.double(x$edge[[d]]),
+       a = as.double(a),
+       psi = as.double(psi),
+       w = double(ev[1L]),
+       BcW=double(nsp*ev[1L])
+     )
+  ) -> out
   attr(out$Bc,"dim") <- c(nsp,ev[1L])
   attr(out$BcW,"dim") <- c(nsp,ev[1L])
   dimnames(out$Bc) <- dimnames(out$BcW) <-
@@ -373,6 +361,13 @@ PEM.build <- function(x, d="distance", sp="species", a=0, psi=1,
   out$u <- out$u[,sel,drop=FALSE]
   out$vt <- out$vt[sel,,drop=FALSE]
   rownames(out$vt) <- colnames(out$u) <- paste("V",1L:sum(sel),sep="_")
+  ## nrow(out$vt)
+  ## ncol(out$u)
+  ## sum(sel)
+  ## Probleme here: when the number of edges is smaller than the number of
+  ## vertices, the number of columns in B is smaller than the number of rows,
+  ## and the number of rows in vt is smaller than the number of columns in
+  ## u.
   rownames(out$u) <- attr(x,"vlabel")[x$vertex[[sp]]]
   colnames(out$vt) <- attr(x,"elabel")
   attr(out,"class") <- "PEM"
@@ -542,7 +537,7 @@ getGraphLocations <- function(tpall, targets) {
   tpmodel <- drop.tip(tpall, targets)
   tpmodel$root.edge <- tpall$root.edge
   xmodel <- Phylo2DirectedGraph(tpmodel)
-  Bmodel <- PEMInfluence(xmodel)
+  Bmodel <- InflMat(xmodel)
   loc <- matrix(NA, length(targets), ncol(Bmodel),
                 dimnames = list(targets,colnames(Bmodel)))
   dtt <- rep(NA, length(targets))
@@ -622,7 +617,7 @@ getGraphLocations <- function(tpall, targets) {
 getAncGraphLocations <- function(x, tpall) {
   if(missing(x) && !missing(tpall))
     x <- Phylo2DirectedGraph(tpall)
-  loc <- PEMInfluence(x)[!x$vertex$species,] * x$edge$distance
+  loc <- InflMat(x)[!x$vertex$species,] * x$edge$distance
   return(list(x = x, locations = loc, LCA2target = numeric(nrow(loc))))
 }
 #' 

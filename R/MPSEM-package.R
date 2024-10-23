@@ -1,11 +1,11 @@
 ## **************************************************************************
 ##
-##    (c) 2010-2022 Guillaume Guénard
+##    (c) 2010-2024 Guillaume Guénard
 ##        Department de sciences biologiques,
 ##        Université de Montréal
 ##        Montreal, QC, Canada
 ##
-##    **Package MPSEM description**
+##    ** Package MPSEM description **
 ##
 ##    This file is part of MPSEM
 ##
@@ -64,7 +64,7 @@
 #' 
 #' The package provides low-level utility functions for performing operations on
 #' graphs (see \link{graph-functions}), calculate influence matrix
-#' (\code{\link{PEMInfluence}}), and simulate trait values (see
+#' (\code{\link{InflMat}}), and simulate trait values (see
 #' \link{trait-simulator}).
 #' 
 #' A phylogenetic modelling tutorial using \code{MPSEM} is available as a

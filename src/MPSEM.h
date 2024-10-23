@@ -1,10 +1,10 @@
 /*************************************************************************
  
- (c) 2010-2022 Guillaume Guénard
+ (c) 2010-2024 Guillaume Guénard
  Université de Montréal, Montreal, Quebec, Canada
  
- **handles directed graphs in the context of modelling processes modulating**
- **trait evolution along phylogeny.**
+ ** handles directed graphs in the context of modelling processes modulating **
+ ** trait evolution along phylogeny. **
  
  This file is part of MPSEM
  
@@ -25,16 +25,15 @@
  
  *************************************************************************/
 
-// Defines
-#define length 0x0
-#define meanchar 0x0
-#define charvalue 0x1
-#define missing 0x0        // ! check for a more suitable missing value marker.
-// #define with_testing
+#ifndef MPSEM_C_H
 
-#ifndef M_LN_2PI
-#define M_LN_2PI 1.837877066409345d  // log(2*pi)
-#endif
+// Defines
+#define MPSEM_C_H
+// #define WITH_TESTING
+
+#include<R.h>
+#include<Rmath.h>
+#include <stdbool.h>
 
 // Type declarations
 
@@ -76,7 +75,13 @@ typedef struct matrix {
   double* v;            // Values attached to the matrix, ordered by column(s).
 } matrix;
 
+
 // C functions declarations.
+
+// Influence matrix functions:
+bool all_proc(bool* ipr, int nv);
+bool can_proc(int* fr, int* to, bool* ipr, int ne, int v);
+
 // Edge functions:
 dedge* allocdedge(unsigned int ne);
 dedge* reallocdedge(dedge* de, unsigned int ne);
@@ -132,7 +137,7 @@ void getrow(matrix *mat, unsigned int i, double *a);
 void getcolumn(matrix *mat, unsigned int j, double *a);
 
 // Auxiliary functions.
-void InfluenceRD(dgraph* dgr, unsigned int e, int* out);
+// void InfluenceRD(dgraph* dgr, unsigned int e, int* out);
 unsigned int rselect(double* prob, unsigned int n);
 void evolveqcalongtree(dgraph* dgr, double* tw, unsigned int ntw,
                        unsigned int sr, unsigned int nnv);
@@ -144,7 +149,7 @@ void PEMweightC(double* d, int* nd, double* a, double* psi, double* res);
 void PsquaredC(double* p, double* o, int* n, double* res);
 
 // Testing functions.
-#ifdef with_testing
+#ifdef WITH_TESTING
 void checkdedge(dedge* de, unsigned int ne);
 void checkdedgevalues(dedge* de, unsigned int ne);
 void checkdvertex(dvertex* dn, unsigned int nn);
@@ -167,7 +172,8 @@ void test_function6(double *mat1, double *d, double *mat2, double *res,
 #endif
 
 // R functions:
-void PEMInfMat(int* from, int* to, int* ne, int* nn, int* out);
+void dstIdxC(int* n, int* na, int* nb, int* nn, int* a, int* b, int* idx);
+void InflMatC(int* ne, int* nv, int* from, int* to, int* B);
 void EvolveQC(int* from, int* to, int* ne, int* nn, double* nv, double* tw,
               int* ntw, int* anc, int* n, int* sr);
 void OUsim(int* from, int* to, int* ne, int* nn, double* lg, double* alpha,
@@ -178,3 +184,5 @@ void PEMupdateC(int* ne, int* nsp, double* Bc, double* d, double* a,
                 double* psi, double* w, double* BcW);
 void PEMLoc2Scores(int* ne, double* mw, int* ntgt, double* loc, double* a,
                    double* psi, int* nd, double* d, double* vt, double* sc);
+
+#endif
