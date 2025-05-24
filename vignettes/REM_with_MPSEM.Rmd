@@ -1,5 +1,5 @@
 ---
-title: "A phylogenetic modelling tutorial using Phylogenetic Eigenvector Maps (PEM) as implemented in R package MPSEM (0.4-4)"
+title: "A phylogenetic modelling tutorial using Phylogenetic Eigenvector Maps (PEM) as implemented in R package MPSEM (0.6-1)"
 author: "Guillaume Guénard"
 date: "`r format(Sys.time(), '%Y-%m-%d')`"
 output:
@@ -8,7 +8,7 @@ output:
     toc_depth: 3
 bibliography: PEM_with_MPSEM.bib
 vignette: >
-  %\VignetteIndexEntry{A phylogenetic modelling tutorial using Phylogenetic Eigenvector Maps (PEM) as implemented in R package MPSEM (0.4-4)}
+  %\VignetteIndexEntry{A phylogenetic modelling tutorial using Phylogenetic Eigenvector Maps (PEM) as implemented in R package MPSEM (0.6-1)}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---

@@ -1,6 +1,6 @@
 /*************************************************************************
  
- (c) 2008-2024 Guillaume Guénard
+ (c) 2010-2025 Guillaume Guénard
  Université de Montréal, Montreal, Quebec, Canada
  
  **Registering routines and dynamic symbols**

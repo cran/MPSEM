@@ -45,6 +45,13 @@ graphs (see \link{graph-functions}), calculate influence matrix
 A phylogenetic modelling tutorial using \code{MPSEM} is available as a
 package vignette. See example below.
 
+From version 0.6-1, no new features will be added to MPSEM. A new package is
+currently under development to replace MPSEM as a platform for future PEM
+development. We will continue to maintain MPSEM to provide backward
+compatibility for old scripts. The release of the new package under
+development will be announced here along with reference to any relevant
+research article.
+
 The DESCRIPTION file:
 \packageDESCRIPTION{MPSEM}
 \packageIndices{MPSEM}

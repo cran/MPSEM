@@ -1,6 +1,6 @@
 ## **************************************************************************
 ##
-##    (c) 2010-2024 Guillaume Guénard
+##    (c) 2010-2025 Guillaume Guénard
 ##        Department de sciences biologiques,
 ##        Université de Montréal
 ##        Montreal, QC, Canada
